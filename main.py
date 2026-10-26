@@ -1,14 +1,9 @@
-"""Sistema de Gestion de Estacionamiento AutoPark.
-
-Trabajo Practico N.º 2 - Programacion I / II.
-"""
-
 import sys
 from datetime import datetime
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent
-# Los modulos del programa estan en codigo/; se agrega al path antes de importar.
+
 sys.path.insert(0, str(BASE / "codigo"))
 
 from datos import (
@@ -46,7 +41,6 @@ RUTA_MANUAL = SALIDAS / "liquidacion-manual.csv"
 
 
 def buscar_en_datos(nombre):
-    """Busca un archivo en datos/ y, por compatibilidad, en la raiz."""
     for carpeta in (DATOS, BASE):
         ruta = carpeta / nombre
         if ruta.exists():
@@ -55,7 +49,6 @@ def buscar_en_datos(nombre):
 
 
 def buscar_tarifas():
-    """Acepta tarifas.json (enunciado) o tarifa.json (nombre alternativo)."""
     for nombre in ("tarifas.json", "tarifa.json"):
         ruta = buscar_en_datos(nombre)
         if ruta.exists():

@@ -1,10 +1,3 @@
-"""Lectura y normalizacion de datos de entrada.
-
-Aca no se calcula nada: solo se leen los JSON, se limpian los textos y se
-convierten las horas y los numeros a un formato comodo para el resto del
-programa.
-"""
-
 import json
 import re
 from pathlib import Path
@@ -17,28 +10,24 @@ CAMPOS_TARIFA = ("precio_bloque_30min", "precio_hora_adicional", "tope_dia")
 
 
 def normalizar_patente(valor):
-    """Saca los espacios y pasa a mayusculas. Devuelve None si no es texto."""
     if not isinstance(valor, str):
         return None
     return "".join(valor.split()).upper()
 
 
 def patente_valida(patente):
-    """True si cumple el formato tradicional (ABC123) o Mercosur (AA123BB)."""
     if not patente:
         return False
     return bool(PATRON_TRADICIONAL.match(patente) or PATRON_MERCOSUR.match(patente))
 
 
 def normalizar_tipo(valor):
-    """Saca espacios de los costados y pasa a minusculas."""
     if not isinstance(valor, str):
         return None
     return valor.strip().lower()
 
 
 def parsear_hora(valor):
-    """Convierte 'HH:MM' a minutos desde las 00:00. Devuelve None si es invalida."""
     if not isinstance(valor, str):
         return None
     coincidencia = PATRON_HORA.match(valor.strip())
@@ -48,7 +37,6 @@ def parsear_hora(valor):
 
 
 def normalizar_hora(valor):
-    """Devuelve la hora siempre como HH:MM, o None si no se puede leer."""
     minutos = parsear_hora(valor)
     if minutos is None:
         return None
@@ -56,7 +44,6 @@ def normalizar_hora(valor):
 
 
 def a_booleano(valor):
-    """Interpreta los valores tipicos de si/no. Devuelve None si no se entiende."""
     if isinstance(valor, bool):
         return valor
     if isinstance(valor, int) and valor in (0, 1):
@@ -71,7 +58,6 @@ def a_booleano(valor):
 
 
 def a_entero(valor):
-    """Convierte a entero si es un numero entero o un texto con digitos."""
     if isinstance(valor, bool):
         return None
     if isinstance(valor, int):
@@ -86,12 +72,10 @@ def a_entero(valor):
 
 
 def formatear_pesos(valor):
-    """1234567 -> '$1.234.567' (formato argentino)."""
     return "$" + "{:,}".format(int(valor)).replace(",", ".")
 
 
 def formatear_minutos(minutos):
-    """135 -> '2 h 15 min'."""
     horas, resto = divmod(int(minutos), 60)
     if horas and resto:
         return "{} h {} min".format(horas, resto)
@@ -101,10 +85,9 @@ def formatear_minutos(minutos):
 
 
 def cargar_json(ruta):
-    """Lee un JSON y devuelve su contenido. Lanza un error claro si falla."""
     ruta = Path(ruta)
     try:
-        # utf-8-sig acepta archivos con o sin BOM (por ejemplo, guardados con Notepad).
+
         with ruta.open("r", encoding="utf-8-sig") as archivo:
             return json.load(archivo)
     except FileNotFoundError:
@@ -117,12 +100,6 @@ def cargar_json(ruta):
 
 
 def cargar_tarifas(ruta):
-    """Lee tarifas.json y valida que cada categoria tenga los cuatro precios.
-
-    Devuelve {'configuracion': {...}, 'tarifas': {'auto': {...}, ...}}.
-    Si una categoria esta incompleta o tiene un precio invalido, se rechaza
-    todo el archivo: es preferible avisar antes que cobrar mal.
-    """
     datos = cargar_json(ruta)
     if not isinstance(datos, dict):
         raise ValueError("tarifas.json debe tener un objeto en la raiz")
@@ -151,7 +128,7 @@ def cargar_tarifas(ruta):
                     tipo_bruto, campo))
             limpia[campo] = numero
 
-        # El lavado es opcional: una categoria nueva puede no ofrecerlo.
+
         precio_lavado = a_entero(valores.get("precio_lavado", 0))
         if precio_lavado is None or precio_lavado < 0:
             raise ValueError("Tarifa '{}': 'precio_lavado' no es un numero valido".format(

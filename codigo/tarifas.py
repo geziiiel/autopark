@@ -1,18 +1,7 @@
-"""Calculo del estacionamiento y liquidacion final.
-
-La funcion importante es calcular_estacionamiento_recursivo: no usa for ni
-while, baja siempre restando un bloque de tiempo hasta llegar al caso base.
-
-Regla del enunciado (punto B):
-  - hasta 120 minutos se cobra en bloques de 30 minutos;
-  - a partir del minuto 121, el excedente se cobra por hora completa.
-"""
-
 from datos import a_entero
 
 
 def mapa_tarifas(tarifas):
-    """Acepta tanto la estructura completa como solo el diccionario de tarifas."""
     if isinstance(tarifas, dict) and isinstance(tarifas.get("tarifas"), dict):
         return tarifas["tarifas"]
     return tarifas
@@ -25,7 +14,6 @@ def configuracion(tarifas):
 
 
 def _limites(tarifas):
-    """Minutos del bloque, limite de las 2 horas y tamano de la hora adicional."""
     config = configuracion(tarifas)
     bloque = a_entero(config.get("minutos_bloque_inicial")) or 30
     limite = a_entero(config.get("minutos_limite_primer_tramo")) or 120
@@ -38,17 +26,6 @@ def _tarifa(tarifas, tipo_vehiculo):
 
 
 def calcular_estacionamiento_recursivo(minutos_restantes, tipo_vehiculo, tarifas):
-    """Costo de estacionamiento en el mismo dia, sin lavado y sin tope.
-
-    Caso base: si ya no quedan minutos, no se suma nada.
-    Primer tramo: hasta 120 minutos, se agrega un bloque de 30 y se sigue.
-    Segundo tramo: lo que pasa de 120 se cobra por hora completa.
-
-    Ojo: el pseudocodigo que manda el enunciado como ejemplo resta la hora del
-    total y despues cobra los bloques, y asi 135 minutos pagan 1 hora + 3
-    bloques. La regla escrita dice 4 bloques + 1 hora, y es la que se aplica
-    aca. En la defensa conviene tenerlo claro.
-    """
     if minutos_restantes <= 0:
         return 0
 
@@ -65,7 +42,6 @@ def calcular_estacionamiento_recursivo(minutos_restantes, tipo_vehiculo, tarifas
 
 
 def _calcular_horas_excedentes(minutos, precio_hora, minutos_hora):
-    """Cobra una hora por cada 60 minutos o fraccion que sobra."""
     if minutos <= 0:
         return 0
     return precio_hora + _calcular_horas_excedentes(minutos - minutos_hora,
@@ -73,12 +49,6 @@ def _calcular_horas_excedentes(minutos, precio_hora, minutos_hora):
 
 
 def liquidar(dias, minutos, tipo_vehiculo, solicito_lavado, tarifas):
-    """Devuelve el desglose completo de una estadia.
-
-    dias > 0  -> costo fijo por dia (tope_dia * dias), sin horas.
-    dias == 0 -> estacionamiento por bloques/horas, con tope diario y el
-                 beneficio de lavado que corresponda.
-    """
     tarifa = _tarifa(tarifas, tipo_vehiculo)
     bloque, limite, hora = _limites(tarifas)
     tope = tarifa["tope_dia"]
@@ -112,11 +82,11 @@ def liquidar(dias, minutos, tipo_vehiculo, solicito_lavado, tarifas):
 
     if solicito_lavado:
         if minutos <= limite:
-            # Las dos primeras horas quedan 100% bonificadas.
+
             bonificacion = base_con_tope
             estacionamiento = 0
         else:
-            # Se bonifican las dos primeras horas y se cobra solo el excedente.
+
             bonificacion = min(bloques * tarifa["precio_bloque_30min"], base_con_tope)
             estacionamiento = base_con_tope - bonificacion
         costo_lavado = precio_lavado

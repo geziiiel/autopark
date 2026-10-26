@@ -1,9 +1,3 @@
-"""Validacion de cada movimiento del lote.
-
-Siempre se devuelve el primer motivo de rechazo encontrado, en el orden en que
-los pide el enunciado, para que el CSV se entienda de una sola lectura.
-"""
-
 from datos import (
     a_booleano,
     a_entero,
@@ -17,7 +11,6 @@ from tarifas import mapa_tarifas
 
 
 def _texto(valor):
-    """Texto corto para el motivo. Si vino vacio, se muestra 'vacio'."""
     if valor is None:
         return "vacio"
     texto = str(valor).strip()
@@ -25,7 +18,6 @@ def _texto(valor):
 
 
 def validar_movimiento(movimiento, tarifas, ids_vistos):
-    """Devuelve (movimiento_normalizado, None) o (None, motivo_del_rechazo)."""
     if not isinstance(movimiento, dict):
         return None, "Movimiento invalido (no es un objeto)"
 

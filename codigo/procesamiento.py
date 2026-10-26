@@ -1,15 +1,8 @@
-"""Procesamiento del lote de movimientos."""
-
 from tarifas import liquidar
 from validaciones import validar_movimiento
 
 
 def procesar_lote(datos, tarifas):
-    """Recorre los movimientos, valida y liquida.
-
-    Devuelve (validos, rechazados). Cada valido es un diccionario listo para
-    el CSV, con el desglose de la liquidacion ya calculado.
-    """
     if not isinstance(datos, dict):
         raise ValueError("movimientos.json debe tener un objeto en la raiz")
 

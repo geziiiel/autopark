@@ -1,5 +1,3 @@
-"""Escritura de los CSV y reportes por consola."""
-
 import csv
 from datetime import datetime
 from pathlib import Path
@@ -20,17 +18,14 @@ CAMPOS_MANUAL = ["id", "fecha_registro"] + [
 
 
 def ordenar_liquidacion(validos):
-    """Ordena la liquidacion por patente y, si hay empatados, por ID."""
     return sorted(validos, key=lambda fila: (fila["patente"], fila["id"]))
 
 
 def ordenar_rechazados(rechazados):
-    """Ordena los rechazos por ID para que sean faciles de ubicar."""
     return sorted(rechazados, key=lambda fila: (fila["id"], fila["patente"]))
 
 
 def contar_rechazos(rechazados):
-    """Devuelve un diccionario motivo -> cantidad, ordenado por motivo."""
     conteo = {}
     for fila in rechazados:
         conteo[fila["motivo"]] = conteo.get(fila["motivo"], 0) + 1
@@ -38,7 +33,6 @@ def contar_rechazos(rechazados):
 
 
 def escribir_csv(ruta, campos, filas):
-    """Escribe un CSV completo (borra el anterior)."""
     with Path(ruta).open("w", newline="", encoding="utf-8-sig") as archivo:
         escritor = csv.DictWriter(archivo, fieldnames=campos)
         escritor.writeheader()
@@ -55,20 +49,18 @@ def escribir_rechazados(rechazados, ruta):
 
 
 def escribir_ranking(validos, ruta):
-    """Desafio nivel 1 N.º 3: mismos registros, de mayor a menor total."""
     ordenados = sorted(validos, key=lambda fila: (-fila["total"], fila["patente"]))
     escribir_csv(ruta, CAMPOS_LIQUIDACION, ordenados)
 
 
 def agregar_liquidacion_manual(registro, ruta):
-    """Agrega una fila a liquidacion-manual.csv sin borrar lo anterior."""
     ruta = Path(ruta)
     existe = ruta.exists() and ruta.stat().st_size > 0
 
     if existe:
         archivo = ruta.open("a", newline="", encoding="utf-8")
     else:
-        # utf-8-sig solo al crear: si se usa al agregar, mete un BOM en el medio.
+
         archivo = ruta.open("w", newline="", encoding="utf-8-sig")
 
     with archivo:
@@ -132,7 +124,6 @@ def imprimir_resumen(validos, rechazados):
 
 
 def calcular_metricas(validos):
-    """Desafio nivel 1 N.º 2: datos para el reporte ejecutivo."""
     recaudado = {}
     cantidad = {}
     minutos = {}
@@ -143,8 +134,7 @@ def calcular_metricas(validos):
         recaudado[tipo] = recaudado.get(tipo, 0) + fila["total"]
         cantidad[tipo] = cantidad.get(tipo, 0) + 1
 
-        # Las estadias prolongadas se miden en dias: se pasan a minutos para
-        # que el promedio sea comparable con las del mismo dia.
+
         duracion = fila["dias"] * 1440 if fila["dias"] > 0 else fila["minutos"]
         minutos[tipo] = minutos.get(tipo, 0) + duracion
 
@@ -196,10 +186,6 @@ def imprimir_metricas(metricas):
             metricas["cantidad"][categoria]))
 
 
-# ---------------------------------------------------------------------------
-# Reporte Excel (opcional: usa openpyxl; el resto del sistema no lo necesita)
-# ---------------------------------------------------------------------------
-
 CAMPOS_RANKING = ["puesto"] + CAMPOS_LIQUIDACION
 
 ANCHOS_LIQUIDACION = {
@@ -244,12 +230,6 @@ FORMATOS_LIQUIDACION = {
 
 
 def escribir_excel(validos, rechazados, metricas, ruta, fecha_operacion=None):
-    """Genera un libro Excel con hojas ordenadas y un recuadro de estadisticas.
-
-    Es un extra opcional. Si openpyxl no esta instalado, se lanza ImportError
-    y el programa sigue funcionando con los CSV. `fecha_operacion` es la fecha
-    que trae el JSON; se usa para que el reporte sea reproducible.
-    """
     try:
         from openpyxl import Workbook
         from openpyxl.chart import BarChart, Reference
@@ -379,7 +359,7 @@ def escribir_excel(validos, rechazados, metricas, ruta, fecha_operacion=None):
     hoja_rank = libro.create_sheet("Ranking")
     hoja_rech = libro.create_sheet("Rechazados")
 
-    # --- Hoja de liquidacion: ordenada por patente y luego por ID ---
+
     escribir_tabla(
         hoja_liq,
         "LIQUIDACIÓN DE MOVIMIENTOS VÁLIDOS",
@@ -390,7 +370,7 @@ def escribir_excel(validos, rechazados, metricas, ruta, fecha_operacion=None):
     )
     hoja_liq.sheet_properties.tabColor = "2E75B6"
 
-    # --- Hoja de ranking: de mayor a menor total, con puesto y top 3 resaltado ---
+
     filas_ranking = []
     for puesto, fila in enumerate(
             sorted(validos, key=lambda f: (-f["total"], f["patente"])), start=1):
@@ -411,7 +391,7 @@ def escribir_excel(validos, rechazados, metricas, ruta, fecha_operacion=None):
     )
     hoja_rank.sheet_properties.tabColor = "BF9000"
 
-    # --- Hoja de rechazados: ordenada por ID ---
+
     escribir_tabla(
         hoja_rech,
         "MOVIMIENTOS RECHAZADOS",
@@ -422,7 +402,7 @@ def escribir_excel(validos, rechazados, metricas, ruta, fecha_operacion=None):
     )
     hoja_rech.sheet_properties.tabColor = "C00000"
 
-    # --- Hoja de estadisticas: recuadro con el resumen del lote ---
+
     total_recaudado = sum(fila["total"] for fila in validos)
     total_movimientos = len(validos) + len(rechazados)
     ticket_promedio = total_recaudado / len(validos) if validos else 0
@@ -567,7 +547,7 @@ def escribir_excel(validos, rechazados, metricas, ruta, fecha_operacion=None):
     else:
         tabla(["-", "-", 0], [None, '"$"#,##0'])
 
-    # Recuadro exterior y formato de la hoja de estadisticas.
+
     ultima_fila_stats = hoja_stats.max_row
     for numero, fila_celdas in enumerate(
             hoja_stats.iter_rows(min_row=1, max_row=ultima_fila_stats,
@@ -591,7 +571,7 @@ def escribir_excel(validos, rechazados, metricas, ruta, fecha_operacion=None):
     hoja_stats.sheet_properties.pageSetUpPr = PageSetupProperties(fitToPage=True)
     hoja_stats.sheet_properties.tabColor = "375623"
 
-    # Grafico de barras al costado del recuadro.
+
     if categorias:
         grafico = BarChart()
         grafico.type = "col"

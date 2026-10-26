@@ -103,34 +103,33 @@ cobro_manual()
 
 | Líneas | Qué explicar |
 |---|---|
-| 1-4 | Docstring: nombre del sistema y trabajo práctico. |
-| 6-12 | Imports. `BASE` es la carpeta del proyecto. `sys.path.insert` agrega `codigo/` para que funcionen los imports. |
-| 14-37 | Se importan solo las funciones que usa `main.py`. Cada módulo tiene una responsabilidad. |
-| 39-45 | Rutas de datos y salidas. `DATOS` apunta a `datos/`; `SALIDAS` a `salidas/`. |
-| 48-54 | `buscar_en_datos()` busca primero en `datos/` y, por compatibilidad, en la raíz. |
-| 57-63 | `buscar_tarifas()` acepta `tarifas.json` o `tarifa.json`. |
-| 66-74 | `pedir_patente()`: pide hasta que sea válida; Enter cancela. |
-| 77-84 | `pedir_tipo()`: muestra las categorías disponibles y valida contra las tarifas. |
-| 87-93 | `pedir_dias()`: entero mayor o igual a 0. |
-| 96-102 | `pedir_hora()`: normaliza a `HH:MM` o vuelve a pedir. |
-| 105-111 | `pedir_lavado()`: usa `a_booleano()` y acepta S/N. |
-| 114-121 | Empieza el cobro manual; si la patente es `None`, cancela. |
-| 123-128 | Pide tipo y días; inicializa horas y minutos. |
-| 130-141 | Si `dias == 0`, pide entrada y salida, calcula minutos y rechaza salida anterior o duración cero. |
-| 142-143 | Si `dias > 0`, no pide horas: se cobra por día completo. |
-| 145-148 | Pide lavado, llama a `liquidar()` y muestra el desglose. |
-| 150-170 | Arma el registro con un ID único `MAN-...` usando fecha, hora y milisegundos. |
-| 172-181 | Guarda en `liquidacion-manual.csv`; si el archivo está abierto, captura `OSError` y avisa. |
-| 183-194 | Opción 2: busca y lee el JSON, llama a `procesar_lote()` y obtiene la fecha de operación. |
-| 196-203 | Escribe los tres CSV; si alguno está bloqueado, avisa y no rompe el programa. |
-| 205-207 | Calcula métricas y muestra el resumen por consola. |
-| 209-221 | Intenta generar el Excel. Si falta `openpyxl` o el archivo está abierto, avisa y sigue. |
-| 223-230 | Lista los archivos generados. |
-| 233-240 | `mostrar_menu()`: imprime las tres opciones. |
-| 243-253 | `main()`: configura la salida UTF-8 y crea `salidas/`. |
-| 255-260 | Carga las tarifas; si hay error, muestra el mensaje y termina. |
-| 262-274 | Bucle del menú: 1 manual, 2 lote, 3 salir, cualquier otra cosa es inválida. |
-| 277-281 | Punto de entrada; captura `Ctrl+C` y `EOFError` para salir prolijamente. |
+| 1-7 | Imports. `BASE` es la carpeta del proyecto. `sys.path.insert` agrega `codigo/` para que funcionen los imports. |
+| 9-32 | Se importan solo las funciones que usa `main.py`. Cada módulo tiene una responsabilidad. |
+| 34-40 | Rutas de datos y salidas. `DATOS` apunta a `datos/`; `SALIDAS` a `salidas/`. |
+| 43-48 | `buscar_en_datos()` busca primero en `datos/` y, por compatibilidad, en la raíz. |
+| 51-56 | `buscar_tarifas()` acepta `tarifas.json` o `tarifa.json`. |
+| 59-67 | `pedir_patente()`: pide hasta que sea válida; Enter cancela. |
+| 70-77 | `pedir_tipo()`: muestra las categorías disponibles y valida contra las tarifas. |
+| 80-86 | `pedir_dias()`: entero mayor o igual a 0. |
+| 89-95 | `pedir_hora()`: normaliza a `HH:MM` o vuelve a pedir. |
+| 98-104 | `pedir_lavado()`: usa `a_booleano()` y acepta S/N. |
+| 107-114 | Empieza el cobro manual; si la patente es `None`, cancela. |
+| 116-121 | Pide tipo y días; inicializa horas y minutos. |
+| 123-134 | Si `dias == 0`, pide entrada y salida, calcula minutos y rechaza salida anterior o duración cero. |
+| 135-136 | Si `dias > 0`, no pide horas: se cobra por día completo. |
+| 138-141 | Pide lavado, llama a `liquidar()` y muestra el desglose. |
+| 143-163 | Arma el registro con un ID único `MAN-...` usando fecha, hora y milisegundos. |
+| 165-174 | Guarda en `liquidacion-manual.csv`; si el archivo está abierto, captura `OSError` y avisa. |
+| 176-187 | Opción 2: busca y lee el JSON, llama a `procesar_lote()` y obtiene la fecha de operación. |
+| 189-196 | Escribe los tres CSV; si alguno está bloqueado, avisa y no rompe el programa. |
+| 198-200 | Calcula métricas y muestra el resumen por consola. |
+| 202-214 | Intenta generar el Excel. Si falta `openpyxl` o el archivo está abierto, avisa y sigue. |
+| 216-223 | Lista los archivos generados. |
+| 226-233 | `mostrar_menu()`: imprime las tres opciones. |
+| 236-246 | `main()`: configura la salida UTF-8 y crea `salidas/`. |
+| 248-253 | Carga las tarifas; si hay error, muestra el mensaje y termina. |
+| 255-267 | Bucle del menú: 1 manual, 2 lote, 3 salir, cualquier otra cosa es inválida. |
+| 270-274 | Punto de entrada; captura `Ctrl+C` y `EOFError` para salir prolijamente. |
 
 **Frase para defender `sys.path.insert`:**
 
@@ -144,33 +143,33 @@ cobro_manual()
 
 | Líneas | Qué explicar |
 |---|---|
-| 8-16 | Imports y expresiones regulares. `PATRON_TRADICIONAL`, `PATRON_MERCOSUR` y `PATRON_HORA`. |
-| 19-23 | `normalizar_patente()`: si no es texto devuelve `None`; si es texto, saca espacios y pasa a mayúsculas. |
-| 26-30 | `patente_valida()`: true si cumple cualquiera de los dos formatos. |
-| 33-37 | `normalizar_tipo()`: saca espacios de los costados y pasa a minúsculas. |
-| 40-47 | `parsear_hora()`: convierte `HH:MM` a minutos desde las 00:00. Usa grupos de la regex. |
-| 50-55 | `normalizar_hora()`: vuelve a formato `HH:MM` con dos dígitos. |
-| 58-70 | `a_booleano()`: acepta bool, 0/1 y textos como `si`, `s`, `true`, `no`, `n`, `false`. Si no entiende, devuelve `None`. |
-| 73-85 | `a_entero()`: acepta enteros, floats enteros y textos con dígitos. Rechaza `bool` a propósito. |
-| 88-90 | `formatear_pesos()`: `1234567` → `$1.234.567`. |
-| 93-100 | `formatear_minutos()`: `135` → `2 h 15 min`. |
-| 103-116 | `cargar_json()`: abre con `utf-8-sig`, captura archivo inexistente, error de lectura y JSON inválido. |
-| 119-163 | `cargar_tarifas()`: valida que la raíz sea un objeto, que exista `tarifas`, que cada categoría tenga los tres precios obligatorios y que `precio_lavado` sea válido. |
+| 1-9 | Imports y expresiones regulares. `PATRON_TRADICIONAL`, `PATRON_MERCOSUR` y `PATRON_HORA`. |
+| 12-15 | `normalizar_patente()`: si no es texto devuelve `None`; si es texto, saca espacios y pasa a mayúsculas. |
+| 18-21 | `patente_valida()`: true si cumple cualquiera de los dos formatos. |
+| 24-27 | `normalizar_tipo()`: saca espacios de los costados y pasa a minúsculas. |
+| 30-36 | `parsear_hora()`: convierte `HH:MM` a minutos desde las 00:00. Usa grupos de la regex. |
+| 39-43 | `normalizar_hora()`: vuelve a formato `HH:MM` con dos dígitos. |
+| 46-57 | `a_booleano()`: acepta bool, 0/1 y textos como `si`, `s`, `true`, `no`, `n`, `false`. Si no entiende, devuelve `None`. |
+| 60-71 | `a_entero()`: acepta enteros, floats enteros y textos con dígitos. Rechaza `bool` a propósito. |
+| 74-75 | `formatear_pesos()`: `1234567` → `$1.234.567`. |
+| 78-84 | `formatear_minutos()`: `135` → `2 h 15 min`. |
+| 87-99 | `cargar_json()`: abre con `utf-8-sig`, captura archivo inexistente, error de lectura y JSON inválido. |
+| 102-140 | `cargar_tarifas()`: valida que la raíz sea un objeto, que exista `tarifas`, que cada categoría tenga los tres precios obligatorios y que `precio_lavado` sea válido. |
 
 **Líneas importantes:**
 
-- **21-23:** `if not isinstance(valor, str): return None` evita que un número o
+- **13-15:** `if not isinstance(valor, str): return None` evita que un número o
   `None` rompa la normalización.
-- **23:** `"".join(valor.split()).upper()` saca **todos** los espacios, no solo
+- **15:** `"".join(valor.split()).upper()` saca **todos** los espacios, no solo
   los de los costados.
-- **30:** `bool(...)` porque `re.match` devuelve un objeto o `None`, no un bool.
-- **44-47:** `group(1)` son las horas y `group(2)` los minutos.
-- **75-76:** `bool` es subclase de `int` en Python; por eso se rechaza antes de
+- **21:** `bool(...)` porque `re.match` devuelve un objeto o `None`, no un bool.
+- **33-36:** `group(1)` son las horas y `group(2)` los minutos.
+- **61-62:** `bool` es subclase de `int` en Python; por eso se rechaza antes de
   aceptar enteros.
-- **108:** `utf-8-sig` acepta archivos con o sin BOM, típico de Windows/Notepad.
-- **130-136:** valida la estructura general antes de recorrer categorías.
-- **139-152:** recorre cada categoría y exige los tres campos numéricos.
-- **155-159:** el lavado es opcional; si falta, vale 0.
+- **91:** `utf-8-sig` acepta archivos con o sin BOM, típico de Windows/Notepad.
+- **107-113:** valida la estructura general antes de recorrer categorías.
+- **116-129:** recorre cada categoría y exige los tres campos numéricos.
+- **132-136:** el lavado es opcional; si falta, vale 0.
 
 ---
 
@@ -178,18 +177,18 @@ cobro_manual()
 
 | Líneas | Qué explicar |
 |---|---|
-| 11 | Importa `a_entero` para leer la configuración. |
-| 14-18 | `mapa_tarifas()` acepta la estructura completa o solo el diccionario interno. |
-| 21-24 | `configuracion()` devuelve la sección de configuración o `{}`. |
-| 27-33 | `_limites()` lee bloque, límite y hora adicional; usa 30/120/60 por defecto. |
-| 36-37 | `_tarifa()` devuelve la tarifa de la categoría. |
-| 40-64 | **Recursión principal.** Caso base y dos ramas. |
-| 67-72 | **Recursión de horas excedentes.** |
-| 75-100 | `liquidar()` para `dias > 0`: cobra días completos y lavado. |
-| 102-104 | Calcula la base recursiva y aplica el tope con `min()`. |
-| 106-111 | Calcula bloques y horas adicionales para mostrarlos en el desglose. |
-| 113-126 | Aplica la bonificación por lavado. |
-| 128-139 | Devuelve el diccionario completo con todos los importes. |
+| 1 | Importa `a_entero` para leer la configuración. |
+| 4-7 | `mapa_tarifas()` acepta la estructura completa o solo el diccionario interno. |
+| 10-13 | `configuracion()` devuelve la sección de configuración o `{}`. |
+| 16-21 | `_limites()` lee bloque, límite y hora adicional; usa 30/120/60 por defecto. |
+| 24-25 | `_tarifa()` devuelve la tarifa de la categoría. |
+| 28-41 | **Recursión principal.** Caso base y dos ramas. |
+| 44-48 | **Recursión de horas excedentes.** |
+| 51-70 | `liquidar()` para `dias > 0`: cobra días completos y lavado. |
+| 72-74 | Calcula la base recursiva y aplica el tope con `min()`. |
+| 76-81 | Calcula bloques y horas adicionales para mostrarlos en el desglose. |
+| 83-96 | Aplica la bonificación por lavado. |
+| 98-109 | Devuelve el diccionario completo con todos los importes. |
 
 #### La recursión, línea por línea
 
@@ -246,17 +245,17 @@ La regla escrita dice **4 bloques + 1 hora**, y eso es lo que hace el código.
 
 #### `liquidar()`, línea por línea
 
-- **82-85:** obtiene tarifa, límites, tope y precio de lavado.
-- **87-100:** si `dias > 0`, cobra `dias * tope_dia` y suma lavado. No usa horas.
-- **102:** calcula la base con la recursión.
-- **103:** `tope_aplicado = base > tope` guarda si se recortó.
-- **104:** `base_con_tope = min(base, tope)` aplica el tope.
-- **106-111:** calcula bloques y horas solo para el desglose.
-- **113-121:** con lavado y hasta 120 minutos, bonifica todo el estacionamiento.
-- **118-121:** con lavado y más de 120 minutos, bonifica las dos primeras horas
+- **52-55:** obtiene tarifa, límites, tope y precio de lavado.
+- **57-70:** si `dias > 0`, cobra `dias * tope_dia` y suma lavado. No usa horas.
+- **72:** calcula la base con la recursión.
+- **73:** `tope_aplicado = base > tope` guarda si se recortó.
+- **74:** `base_con_tope = min(base, tope)` aplica el tope.
+- **76-81:** calcula bloques y horas solo para el desglose.
+- **83-91:** con lavado y hasta 120 minutos, bonifica todo el estacionamiento.
+- **88-91:** con lavado y más de 120 minutos, bonifica las dos primeras horas
   (4 bloques) y cobra solo el excedente.
-- **123-126:** sin lavado, paga el estacionamiento con tope.
-- **128-139:** devuelve todos los datos: días, minutos, bloques, base,
+- **93-96:** sin lavado, paga el estacionamiento con tope.
+- **98-109:** devuelve todos los datos: días, minutos, bloques, base,
   bonificación, estacionamiento, lavado, total y si se aplicó el tope.
 
 **Ejemplos para tener a mano:**
@@ -275,17 +274,17 @@ La regla escrita dice **4 bloques + 1 hora**, y eso es lo que hace el código.
 
 | Líneas | Qué explicar |
 |---|---|
-| 7-16 | Imports de normalización, parseo y `mapa_tarifas`. |
-| 19-24 | `_texto()`: si el valor es `None` o está vacío, devuelve `"vacio"` para el mensaje. |
-| 27-30 | Verifica que el movimiento sea un diccionario. |
-| 32-37 | Valida el ID: `None` → vacío; `strip()`; rechaza vacío y repetido. |
-| 39-42 | Normaliza y valida la patente. |
-| 44-47 | Normaliza el tipo y verifica que exista en las tarifas. |
-| 49-52 | Lee `dias` (por defecto 0) y exige entero mayor o igual a 0. |
-| 54-56 | Inicializa entrada, salida y minutos. |
-| 58-73 | Si `dias == 0`, valida horas, calcula minutos y rechaza salida anterior o duración cero. |
-| 75-81 | Valida `solicito_lavado`; si falta, queda `False`. |
-| 83-92 | Devuelve el movimiento normalizado y `None` como motivo. |
+| 1-10 | Imports de normalización, parseo y `mapa_tarifas`. |
+| 13-17 | `_texto()`: si el valor es `None` o está vacío, devuelve `"vacio"` para el mensaje. |
+| 20-22 | Verifica que el movimiento sea un diccionario. |
+| 24-29 | Valida el ID: `None` → vacío; `strip()`; rechaza vacío y repetido. |
+| 31-34 | Normaliza y valida la patente. |
+| 36-39 | Normaliza el tipo y verifica que exista en las tarifas. |
+| 41-44 | Lee `dias` (por defecto 0) y exige entero mayor o igual a 0. |
+| 46-48 | Inicializa entrada, salida y minutos. |
+| 50-65 | Si `dias == 0`, valida horas, calcula minutos y rechaza salida anterior o duración cero. |
+| 67-73 | Valida `solicito_lavado`; si falta, queda `False`. |
+| 75-84 | Devuelve el movimiento normalizado y `None` como motivo. |
 
 **Orden de validación:** ID, patente, tipo, días, horas, lavado. Se devuelve el
 **primer** motivo encontrado para que el CSV se entienda de una sola lectura.
@@ -308,14 +307,14 @@ La regla escrita dice **4 bloques + 1 hora**, y eso es lo que hace el código.
 
 | Líneas | Qué explicar |
 |---|---|
-| 7-14 | Verifica que el JSON sea un diccionario. |
-| 16-18 | Verifica que exista la lista `movimientos`. |
-| 20-22 | Crea listas `validos` y `rechazados`, y el set `ids_vistos`. |
-| 24-34 | Recorre cada movimiento; si hay motivo, lo agrega a `rechazados` y sigue. |
-| 36-43 | Si es válido, agrega el ID al set y llama a `liquidar()`. |
-| 45-62 | Arma la fila final con todos los campos; convierte lavado y tope a `S/N`. |
-| 64 | Devuelve `(validos, rechazados)`. |
-| 67-68 | `_texto()` auxiliar para rechazados. |
+| 5-7 | Verifica que el JSON sea un diccionario. |
+| 9-11 | Verifica que exista la lista `movimientos`. |
+| 13-15 | Crea listas `validos` y `rechazados`, y el set `ids_vistos`. |
+| 17-27 | Recorre cada movimiento; si hay motivo, lo agrega a `rechazados` y sigue. |
+| 29-36 | Si es válido, agrega el ID al set y llama a `liquidar()`. |
+| 38-55 | Arma la fila final con todos los campos; convierte lavado y tope a `S/N`. |
+| 57 | Devuelve `(validos, rechazados)`. |
+| 60-61 | `_texto()` auxiliar para rechazados. |
 
 **Por qué `ids_vistos` es un `set`:** buscar dentro de un set es mucho más
 rápido que recorrer una lista, y el set no permite duplicados. El primer ID
@@ -327,51 +326,51 @@ válido se registra; si aparece de nuevo, se rechaza.
 
 | Líneas | Qué explicar |
 |---|---|
-| 9-19 | Listas de campos de los CSV. `CAMPOS_MANUAL` agrega `fecha_registro` y evita repetir `id`. |
-| 22-29 | `ordenar_liquidacion()` por patente e ID; `ordenar_rechazados()` por ID y patente. |
-| 32-37 | `contar_rechazos()`: diccionario motivo → cantidad, ordenado. |
-| 40-46 | `escribir_csv()`: abre en `w`, `newline=""`, `utf-8-sig`; escribe encabezado y filas. |
-| 49-60 | Los tres escritores: liquidación, rechazados y ranking. |
-| 63-78 | `agregar_liquidacion_manual()`: si el archivo existe, agrega; si no, crea con encabezado. |
-| 81-114 | `imprimir_desglose()`: muestra patente, tiempo, base, bonificación, lavado y total. |
-| 117-131 | `imprimir_resumen()`: procesados, rechazados, total y motivos. |
-| 134-166 | `calcular_metricas()`: recaudación, cantidad, promedios, más rentable y porcentaje de lavado. |
-| 169-196 | `imprimir_metricas()`: muestra las métricas por consola. |
-| 199-243 | Constantes del Excel: campos, anchos y formatos. |
-| 246-261 | `escribir_excel()`: importa `openpyxl`; si falta, lanza `ImportError`. |
-| 263-299 | Colores, fuentes, rellenos, alineaciones y bordes. |
-| 301-360 | `escribir_tabla()`: título, encabezado, filas, formatos, colores, anchos, filtro y congelar paneles. |
-| 362-380 | Fecha del reporte, creación del libro y de las cuatro hojas. |
-| 382-423 | Llena Liquidación, Ranking (con puesto y top 3 dorado) y Rechazados. |
-| 425-457 | Totales y encabezado de la hoja Estadísticas. |
-| 459-510 | `seccion()`, `dato()` y `tabla()`: helpers para armar el recuadro. |
-| 512-568 | Contenido: resumen, recaudación por categoría, promedios, rechazos y top 5. |
-| 570-592 | Borde exterior, anchos, configuración de página y color de pestaña. |
-| 594-614 | Gráfico de barras con `BarChart` y `Reference`. |
-| 616-618 | Activa Estadísticas, guarda y devuelve la ruta. |
+| 7-17 | Listas de campos de los CSV. `CAMPOS_MANUAL` agrega `fecha_registro` y evita repetir `id`. |
+| 20-25 | `ordenar_liquidacion()` por patente e ID; `ordenar_rechazados()` por ID y patente. |
+| 28-32 | `contar_rechazos()`: diccionario motivo → cantidad, ordenado. |
+| 35-40 | `escribir_csv()`: abre en `w`, `newline=""`, `utf-8-sig`; escribe encabezado y filas. |
+| 43-53 | Los tres escritores: liquidación, rechazados y ranking. |
+| 56-70 | `agregar_liquidacion_manual()`: si el archivo existe, agrega; si no, crea con encabezado. |
+| 73-106 | `imprimir_desglose()`: muestra patente, tiempo, base, bonificación, lavado y total. |
+| 109-123 | `imprimir_resumen()`: procesados, rechazados, total y motivos. |
+| 126-156 | `calcular_metricas()`: recaudación, cantidad, promedios, más rentable y porcentaje de lavado. |
+| 159-186 | `imprimir_metricas()`: muestra las métricas por consola. |
+| 189-229 | Constantes del Excel: campos, anchos y formatos. |
+| 232-241 | `escribir_excel()`: importa `openpyxl`; si falta, lanza `ImportError`. |
+| 243-279 | Colores, fuentes, rellenos, alineaciones y bordes. |
+| 281-340 | `escribir_tabla()`: título, encabezado, filas, formatos, colores, anchos, filtro y congelar paneles. |
+| 342-360 | Fecha del reporte, creación del libro y de las cuatro hojas. |
+| 362-403 | Llena Liquidación, Ranking (con puesto y top 3 dorado) y Rechazados. |
+| 405-437 | Totales y encabezado de la hoja Estadísticas. |
+| 439-490 | `seccion()`, `dato()` y `tabla()`: helpers para armar el recuadro. |
+| 492-548 | Contenido: resumen, recaudación por categoría, promedios, rechazos y top 5. |
+| 550-572 | Borde exterior, anchos, configuración de página y color de pestaña. |
+| 574-594 | Gráfico de barras con `BarChart` y `Reference`. |
+| 596-598 | Activa Estadísticas, guarda y devuelve la ruta. |
 
 **Líneas importantes:**
 
-- **24:** `sorted(validos, key=lambda fila: (fila["patente"], fila["id"]))`:
+- **21:** `sorted(validos, key=lambda fila: (fila["patente"], fila["id"]))`:
   ordena por patente y, si hay empate, por ID.
-- **29:** mismo concepto para rechazados.
-- **42:** `newline=""` evita filas en blanco en Windows.
-- **59:** `-fila["total"]` ordena de mayor a menor.
-- **66:** `ruta.stat().st_size > 0` evita escribir el encabezado dos veces.
-- **69-72:** si el archivo ya existe se abre en `a`; si no, en `w` con
+- **25:** mismo concepto para rechazados.
+- **36:** `newline=""` evita filas en blanco en Windows.
+- **52:** `-fila["total"]` ordena de mayor a menor.
+- **58:** `ruta.stat().st_size > 0` evita escribir el encabezado dos veces.
+- **61-64:** si el archivo ya existe se abre en `a`; si no, en `w` con
   `utf-8-sig`. No se usa `utf-8-sig` al agregar porque metería un BOM en el
   medio del archivo.
-- **148:** una estadía de `dias > 0` se cuenta como `dias * 1440` minutos para
+- **138:** una estadía de `dias > 0` se cuenta como `dias * 1440` minutos para
   que el promedio sea comparable.
-- **155:** `max(recaudado, key=recaudado.get)` devuelve la categoría con más
+- **145:** `max(recaudado, key=recaudado.get)` devuelve la categoría con más
   recaudación.
-- **254-261:** el Excel es opcional; el `try/except ImportError` permite que el
+- **234-241:** el Excel es opcional; el `try/except ImportError` permite que el
   programa siga con los CSV.
-- **344-345:** si la fila está en la lista de colores, se pinta; así se resaltan
+- **324-325:** si la fila está en la lista de colores, se pinta; así se resaltan
   los tres primeros del ranking.
-- **462:** `nonlocal fila` permite que las funciones internas avancen el
+- **442:** `nonlocal fila` permite que las funciones internas avancen el
   contador de filas de la hoja de estadísticas.
-- **616:** `libro.active = 0` hace que el Excel abra en `Estadísticas`.
+- **596:** `libro.active = 0` hace que el Excel abra en `Estadísticas`.
 
 ---
 
@@ -379,15 +378,15 @@ válido se registra; si aparece de nuevo, se rechaza.
 
 | Líneas | Qué explicar |
 |---|---|
-| 8-23 | Imports, `RAIZ` y `DATOS`. |
-| 26-34 | Pruebas de patentes válidas e inválidas. |
-| 37-50 | Pruebas de recursión: 0, 1, 30, 31, 120, 121, 135, 180, 181 y camioneta. |
-| 53-73 | Pruebas de lavado: 60 min, 135 min, sin lavado y 2 días. |
-| 76-89 | Prueba del tope con una tarifa modificada a $1.000. |
-| 92-128 | Pruebas de validaciones: patente, tipo, horas, duración cero, ID vacío, ID repetido, días negativos y estadía prolongada. |
-| 131-184 | Pruebas del lote: 30 válidos, 3 rechazados, total $129.000, IDs concretos, métricas y orden. |
-| 187-227 | Prueba del Excel si `openpyxl` está instalado: hojas, orden, totales y gráfico. |
-| 230-244 | Carga tarifas, ejecuta los seis grupos y muestra el mensaje final. |
+| 1-16 | Imports, `RAIZ` y `DATOS`. |
+| 19-27 | Pruebas de patentes válidas e inválidas. |
+| 30-43 | Pruebas de recursión: 0, 1, 30, 31, 120, 121, 135, 180, 181 y camioneta. |
+| 46-66 | Pruebas de lavado: 60 min, 135 min, sin lavado y 2 días. |
+| 69-82 | Prueba del tope con una tarifa modificada a $1.000. |
+| 85-121 | Pruebas de validaciones: patente, tipo, horas, duración cero, ID vacío, ID repetido, días negativos y estadía prolongada. |
+| 124-177 | Pruebas del lote: 30 válidos, 3 rechazados, total $129.000, IDs concretos, métricas y orden. |
+| 180-219 | Prueba del Excel si `openpyxl` está instalado: hojas, orden, totales y gráfico. |
+| 222-236 | Carga tarifas, ejecuta los seis grupos y muestra el mensaje final. |
 
 **Qué decir:**
 

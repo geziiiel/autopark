@@ -1,10 +1,3 @@
-"""Pruebas del sistema AutoPark.
-
-Se corren con:  python codigo/pruebas.py
-No hace falta instalar nada: son assert comunes. El bloque de Excel se omite
-si openpyxl no esta instalado.
-"""
-
 import tempfile
 from pathlib import Path
 
@@ -35,7 +28,7 @@ def probar_patentes():
 
 
 def probar_recursion(tarifas):
-    # auto: bloque $700, hora adicional $1200
+
     assert calcular_estacionamiento_recursivo(0, "auto", tarifas) == 0
     assert calcular_estacionamiento_recursivo(1, "auto", tarifas) == 700
     assert calcular_estacionamiento_recursivo(30, "auto", tarifas) == 700
@@ -46,28 +39,28 @@ def probar_recursion(tarifas):
     assert calcular_estacionamiento_recursivo(180, "auto", tarifas) == 4000
     assert calcular_estacionamiento_recursivo(181, "auto", tarifas) == 5200
 
-    # camioneta: bloque $1000, hora adicional $1800
+
     assert calcular_estacionamiento_recursivo(135, "camioneta", tarifas) == 5800
 
 
 def probar_lavado(tarifas):
-    # 60 minutos con lavado: se bonifica todo el estacionamiento.
+
     liq = liquidar(0, 60, "auto", True, tarifas)
     assert liq["estacionamiento"] == 0
     assert liq["bonificacion"] == 1400
     assert liq["total"] == 5000
 
-    # 135 minutos con lavado: paga lavado + 1 hora excedente.
+
     liq = liquidar(0, 135, "auto", True, tarifas)
     assert liq["bonificacion"] == 2800
     assert liq["estacionamiento"] == 1200
     assert liq["total"] == 6200
 
-    # 135 minutos sin lavado: paga los 4 bloques + 1 hora.
+
     liq = liquidar(0, 135, "auto", False, tarifas)
     assert liq["total"] == 4000
 
-    # Estadía prolongada: 2 días + lavado.
+
     liq = liquidar(2, 0, "auto", True, tarifas)
     assert liq["estacionamiento"] == 32000
     assert liq["total"] == 37000
@@ -115,7 +108,7 @@ def probar_validaciones(tarifas):
     assert motivo({"solicito_lavado": "tal vez"}) is not None
     assert motivo({"dias": -1}) is not None
 
-    # Días > 0 no piden hora de salida.
+
     prolongada = {
         "id": "X2", "patente": "ABC123", "tipo_vehiculo": "auto",
         "dias": 3, "solicito_lavado": True,
@@ -123,7 +116,7 @@ def probar_validaciones(tarifas):
     normalizado, error = validar_movimiento(prolongada, tarifas, set())
     assert error is None and normalizado["dias"] == 3
 
-    # ID repetido: la segunda vez se rechaza.
+
     ids = {"X1"}
     assert validar_movimiento(base, tarifas, ids)[1] == "ID repetido (X1)"
 
@@ -185,7 +178,6 @@ def probar_lote(tarifas):
 
 
 def probar_excel(validos, rechazados, metricas):
-    """Prueba el libro Excel si openpyxl esta instalado; si no, se omite."""
     try:
         import openpyxl
     except ImportError:
