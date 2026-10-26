@@ -38,6 +38,9 @@ python codigo/pruebas.py
 
 Resultado esperado: `Todas las pruebas pasaron: 6 grupos OK.`
 
+La guía para explicar el código línea por línea y preparar la defensa está en
+`documentacion/GUIA_DEFENSA.md`.
+
 ---
 
 ## Estructura de carpetas
@@ -62,6 +65,7 @@ Resultado esperado: `Todas las pruebas pasaron: 6 grupos OK.`
 ├── documentacion/
 │   ├── ENUNCIADO.md
 │   ├── DESAFIOS_VALOR_AGREGADO.md
+│   ├── GUIA_DEFENSA.md
 │   └── 2°Parcial de programación.md
 └── salidas/
     ├── liquidacion.csv
@@ -95,6 +99,7 @@ acepta una copia en la raíz, pero da prioridad a `datos/`).
 | `requirements.txt` | Dependencia opcional para el Excel (`openpyxl`) |
 | `documentacion/ENUNCIADO.md` | Enunciado completo del parcial |
 | `documentacion/DESAFIOS_VALOR_AGREGADO.md` | Catálogo de desafíos |
+| `documentacion/GUIA_DEFENSA.md` | Guía para explicar el código en la defensa |
 | `documentacion/2°Parcial de programación.md` | Resumen de entrega |
 
 Archivos que genera el programa en `salidas/`:

@@ -9,6 +9,7 @@
 
 - Enunciado completo: `documentacion/ENUNCIADO.md`
 - Desafíos de valor agregado: `documentacion/DESAFIOS_VALOR_AGREGADO.md`
+- Guía de defensa: `documentacion/GUIA_DEFENSA.md`
 - Cómo ejecutar y decisiones: `README.md`
 
 ## Organización
