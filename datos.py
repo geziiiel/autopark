@@ -104,7 +104,8 @@ def cargar_json(ruta):
     """Lee un JSON y devuelve su contenido. Lanza un error claro si falla."""
     ruta = Path(ruta)
     try:
-        with ruta.open("r", encoding="utf-8") as archivo:
+        # utf-8-sig acepta archivos con o sin BOM (por ejemplo, guardados con Notepad).
+        with ruta.open("r", encoding="utf-8-sig") as archivo:
             return json.load(archivo)
     except FileNotFoundError:
         raise ValueError("No se encontro el archivo {}".format(ruta.name))

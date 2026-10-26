@@ -165,11 +165,11 @@ def imprimir_metricas(metricas):
         tipo, formatear_pesos(metricas["recaudado"][tipo])))
     print("Vehiculos con lavado:   {} de {} ({:.1f}%)".format(
         metricas["lavados"], metricas["total_vehiculos"],
-        metricas["porcentaje_lavado"]))
+        metricas["porcentaje_lavado"]).replace(".", ","))
     print("Estadia promedio por categoria:")
     for categoria in sorted(metricas["promedios"]):
         print("  - {}: {:.1f} min".format(
-            categoria, metricas["promedios"][categoria]))
+            categoria, metricas["promedios"][categoria]).replace(".", ","))
 
     print()
     print("Recaudacion por categoria:")
