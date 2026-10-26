@@ -7,9 +7,17 @@
 
 ## Documentos
 
-- Enunciado completo: `ENUNCIADO.md`
-- Desafíos de valor agregado: `DESAFIOS_VALOR_AGREGADO.md`
+- Enunciado completo: `documentacion/ENUNCIADO.md`
+- Desafíos de valor agregado: `documentacion/DESAFIOS_VALOR_AGREGADO.md`
 - Cómo ejecutar y decisiones: `README.md`
+
+## Organización
+
+- `main.py` → entrada del programa (raíz).
+- `codigo/` → módulos del sistema.
+- `datos/` → `tarifas.json` y `movimientos.json`.
+- `documentacion/` → enunciado, desafíos y este resumen.
+- `salidas/` → CSV y Excel generados.
 
 ## Desafíos elegidos (NIVEL 1)
 
@@ -26,11 +34,11 @@
 
 ## Salidas
 
-- `liquidacion.csv` → movimientos válidos, ordenados por patente.
-- `rechazados.csv` → rechazos, ordenados por ID.
-- `liquidacion_ranking.csv` → ranking de mayor a menor total.
-- `liquidacion.xlsx` → hojas ordenadas y recuadro de estadísticas (opcional,
-  requiere `openpyxl`).
+- `salidas/liquidacion.csv` → movimientos válidos, ordenados por patente.
+- `salidas/rechazados.csv` → rechazos, ordenados por ID.
+- `salidas/liquidacion_ranking.csv` → ranking de mayor a menor total.
+- `salidas/liquidacion.xlsx` → hojas ordenadas y recuadro de estadísticas
+  (opcional, requiere `openpyxl`).
 
 ## Ejecución
 
@@ -44,5 +52,5 @@ python main.py
 Pruebas:
 
 ```cmd
-python pruebas.py
+python codigo/pruebas.py
 ```

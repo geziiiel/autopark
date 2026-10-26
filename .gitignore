@@ -6,7 +6,7 @@ venv/
 .env
 
 # Salida acumulativa de pruebas manuales
-liquidacion-manual.csv
+salidas/liquidacion-manual.csv
 
 # Sistema
 Thumbs.db

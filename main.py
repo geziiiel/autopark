@@ -7,6 +7,10 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+BASE = Path(__file__).resolve().parent
+# Los modulos del programa estan en codigo/; se agrega al path antes de importar.
+sys.path.insert(0, str(BASE / "codigo"))
+
 from datos import (
     a_entero,
     a_booleano,
@@ -32,22 +36,31 @@ from reportes import (
 )
 from tarifas import liquidar, mapa_tarifas
 
-BASE = Path(__file__).resolve().parent
-RUTA_MOVIMIENTOS = BASE / "movimientos.json"
-RUTA_LIQUIDACION = BASE / "liquidacion.csv"
-RUTA_RECHAZADOS = BASE / "rechazados.csv"
-RUTA_RANKING = BASE / "liquidacion_ranking.csv"
-RUTA_EXCEL = BASE / "liquidacion.xlsx"
-RUTA_MANUAL = BASE / "liquidacion-manual.csv"
+DATOS = BASE / "datos"
+SALIDAS = BASE / "salidas"
+RUTA_LIQUIDACION = SALIDAS / "liquidacion.csv"
+RUTA_RECHAZADOS = SALIDAS / "rechazados.csv"
+RUTA_RANKING = SALIDAS / "liquidacion_ranking.csv"
+RUTA_EXCEL = SALIDAS / "liquidacion.xlsx"
+RUTA_MANUAL = SALIDAS / "liquidacion-manual.csv"
+
+
+def buscar_en_datos(nombre):
+    """Busca un archivo en datos/ y, por compatibilidad, en la raiz."""
+    for carpeta in (DATOS, BASE):
+        ruta = carpeta / nombre
+        if ruta.exists():
+            return ruta
+    return DATOS / nombre
 
 
 def buscar_tarifas():
     """Acepta tarifas.json (enunciado) o tarifa.json (nombre alternativo)."""
     for nombre in ("tarifas.json", "tarifa.json"):
-        ruta = BASE / nombre
+        ruta = buscar_en_datos(nombre)
         if ruta.exists():
             return ruta
-    return BASE / "tarifas.json"
+    return DATOS / "tarifas.json"
 
 
 def pedir_patente():
@@ -170,8 +183,9 @@ def cobro_manual(tarifas):
 def procesar_lote_opcion(tarifas):
     print()
     print("--- PROCESAMIENTO POR LOTE ---")
+    ruta_movimientos = buscar_en_datos("movimientos.json")
     try:
-        datos = cargar_json(RUTA_MOVIMIENTOS)
+        datos = cargar_json(ruta_movimientos)
         validos, rechazados = procesar_lote(datos, tarifas)
     except ValueError as error:
         print("Error: {}".format(error))
@@ -231,6 +245,12 @@ def main():
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     except Exception:
         pass
+
+    try:
+        SALIDAS.mkdir(parents=True, exist_ok=True)
+    except OSError as error:
+        print("No se pudo crear la carpeta de salidas: {}".format(error))
+        return
 
     ruta_tarifas = buscar_tarifas()
     try:

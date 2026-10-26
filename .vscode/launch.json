@@ -13,7 +13,7 @@
       "name": "Pruebas (pruebas.py)",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/pruebas.py",
+      "program": "${workspaceFolder}/codigo/pruebas.py",
       "console": "integratedTerminal",
       "justMyCode": true
     }

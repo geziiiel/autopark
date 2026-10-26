@@ -1,6 +1,6 @@
 """Pruebas del sistema AutoPark.
 
-Se corren con:  python pruebas.py
+Se corren con:  python codigo/pruebas.py
 No hace falta instalar nada: son assert comunes. El bloque de Excel se omite
 si openpyxl no esta instalado.
 """
@@ -19,7 +19,8 @@ from reportes import (
 from tarifas import calcular_estacionamiento_recursivo, liquidar
 from validaciones import validar_movimiento
 
-BASE = Path(__file__).resolve().parent
+RAIZ = Path(__file__).resolve().parent.parent
+DATOS = RAIZ / "datos"
 
 
 def probar_patentes():
@@ -128,7 +129,7 @@ def probar_validaciones(tarifas):
 
 
 def probar_lote(tarifas):
-    datos = cargar_json(BASE / "movimientos.json")
+    datos = cargar_json(DATOS / "movimientos.json")
     validos, rechazados = procesar_lote(datos, tarifas)
 
     assert len(validos) == 30, "Se esperaban 30 validos y hay {}".format(len(validos))
@@ -227,7 +228,7 @@ def probar_excel(validos, rechazados, metricas):
 
 
 def main():
-    tarifas = cargar_tarifas(BASE / "tarifas.json")
+    tarifas = cargar_tarifas(DATOS / "tarifas.json")
 
     probar_patentes()
     probar_recursion(tarifas)
