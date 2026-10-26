@@ -8,7 +8,7 @@ from datos import formatear_minutos, formatear_pesos
 CAMPOS_LIQUIDACION = [
     "id", "patente", "tipo_vehiculo", "entrada", "salida", "dias", "minutos",
     "bloques_30", "horas_adicionales", "estacionamiento_base", "bonificacion",
-    "estacionamiento", "lavado", "total", "tope_aplicado",
+    "estacionamiento", "solicito_lavado", "lavado", "total", "tope_aplicado",
 ]
 
 CAMPOS_RECHAZADOS = ["id", "patente", "tipo_vehiculo", "motivo"]
@@ -132,7 +132,7 @@ def calcular_metricas(validos):
         duracion = fila["dias"] * 1440 if fila["dias"] > 0 else fila["minutos"]
         minutos[tipo] = minutos.get(tipo, 0) + duracion
 
-        if fila["lavado"] > 0:
+        if fila["solicito_lavado"] == "S":
             lavados += 1
 
     promedios = {tipo: minutos[tipo] / cantidad[tipo] for tipo in cantidad}

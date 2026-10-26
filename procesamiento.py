@@ -55,6 +55,7 @@ def procesar_lote(datos, tarifas):
             "estacionamiento_base": liquidacion["estacionamiento_base"],
             "bonificacion": liquidacion["bonificacion"],
             "estacionamiento": liquidacion["estacionamiento"],
+            "solicito_lavado": "S" if normalizado["solicito_lavado"] else "N",
             "lavado": liquidacion["lavado"],
             "total": liquidacion["total"],
             "tope_aplicado": "S" if liquidacion["tope_aplicado"] else "N",
