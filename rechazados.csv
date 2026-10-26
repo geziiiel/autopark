@@ -1,0 +1,4 @@
+﻿id,patente,tipo_vehiculo,motivo
+MOV031,BH123JJ,auto,Salida anterior a la entrada
+MOV032,BJ234KK,tractor,Tipo de vehiculo invalido (tractor)
+MOV033,PATENTE99,auto,Patente invalida (PATENTE99)

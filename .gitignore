@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Salida acumulativa de pruebas manuales
+liquidacion-manual.csv
+
+# Sistema
+Thumbs.db
+desktop.ini
+*.log

@@ -1,0 +1,28 @@
+{
+  "configuracion": {
+    "minutos_bloque_inicial": 30,
+    "minutos_limite_primer_tramo": 120,
+    "minutos_hora_adicional": 60,
+    "minutos_dia_completo": 1440
+  },
+  "tarifas": {
+    "moto": {
+      "precio_bloque_30min": 400,
+      "precio_hora_adicional": 700,
+      "tope_dia": 9000,
+      "precio_lavado": 2500
+    },
+    "auto": {
+      "precio_bloque_30min": 700,
+      "precio_hora_adicional": 1200,
+      "tope_dia": 16000,
+      "precio_lavado": 5000
+    },
+    "camioneta": {
+      "precio_bloque_30min": 1000,
+      "precio_hora_adicional": 1800,
+      "tope_dia": 24000,
+      "precio_lavado": 7500
+    }
+  }
+}

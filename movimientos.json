@@ -1,0 +1,269 @@
+{
+  "fecha_operacion": "2026-10-19",
+  "movimientos": [
+    {
+      "id": "MOV001",
+      "patente": "AA123BB",
+      "tipo_vehiculo": "auto",
+      "entrada": "08:00",
+      "salida": "08:25",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV002",
+      "patente": "AC234DD",
+      "tipo_vehiculo": "moto",
+      "entrada": "08:10",
+      "salida": "08:55",
+      "solicito_lavado": true
+    },
+    {
+      "id": "MOV003",
+      "patente": "AD345EE",
+      "tipo_vehiculo": "camioneta",
+      "entrada": "07:30",
+      "salida": "09:30",
+      "solicito_lavado": true
+    },
+    {
+      "id": "MOV004",
+      "patente": "AE456FF",
+      "tipo_vehiculo": "auto",
+      "entrada": "06:00",
+      "salida": "09:15",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV005",
+      "patente": "AF567GG",
+      "tipo_vehiculo": "auto",
+      "entrada": "09:00",
+      "salida": "12:30",
+      "solicito_lavado": true
+    },
+    {
+      "id": "MOV006",
+      "patente": "AG678HH",
+      "tipo_vehiculo": "  MOTO  ",
+      "entrada": "07:00",
+      "salida": "08:00",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV007",
+      "patente": "AH789JJ",
+      "tipo_vehiculo": "camioneta",
+      "entrada": "10:00",
+      "salida": "10:15",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV008",
+      "patente": "AJ890KK",
+      "tipo_vehiculo": "auto",
+      "entrada": "10:15",
+      "salida": "11:45",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV009",
+      "patente": "AK901LL",
+      "tipo_vehiculo": "moto",
+      "entrada": "10:00",
+      "salida": "11:30",
+      "solicito_lavado": true
+    },
+    {
+      "id": "MOV010",
+      "patente": "AL012MM",
+      "tipo_vehiculo": "camioneta",
+      "entrada": "08:20",
+      "salida": "13:20",
+      "solicito_lavado": true
+    },
+    {
+      "id": "MOV011",
+      "patente": "AM123NN",
+      "tipo_vehiculo": "auto",
+      "entrada": "11:00",
+      "salida": "11:29",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV012",
+      "patente": "AN234PP",
+      "tipo_vehiculo": "  camioneta",
+      "entrada": "09:30",
+      "salida": "12:00",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV013",
+      "patente": "AP345QQ",
+      "tipo_vehiculo": "moto",
+      "entrada": "12:00",
+      "salida": "14:10",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV014",
+      "patente": "AQ456RR",
+      "tipo_vehiculo": "auto",
+      "entrada": "12:30",
+      "salida": "16:45",
+      "solicito_lavado": true
+    },
+    {
+      "id": "MOV015",
+      "patente": "AR567SS",
+      "tipo_vehiculo": "camioneta",
+      "entrada": "13:00",
+      "salida": "14:00",
+      "solicito_lavado": true
+    },
+    {
+      "id": "MOV016",
+      "patente": "AS678TT",
+      "tipo_vehiculo": "moto",
+      "entrada": "14:00",
+      "salida": "14:20",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV017",
+      "patente": "AT789UU",
+      "tipo_vehiculo": "auto",
+      "entrada": "13:10",
+      "salida": "15:40",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV018",
+      "patente": "AU890VV",
+      "tipo_vehiculo": "camioneta",
+      "entrada": "14:30",
+      "salida": "16:30",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV019",
+      "patente": "AV901WW",
+      "tipo_vehiculo": "auto",
+      "entrada": "15:00",
+      "salida": "15:15",
+      "solicito_lavado": true
+    },
+    {
+      "id": "MOV020",
+      "patente": "AW012XX",
+      "tipo_vehiculo": "moto",
+      "entrada": "15:10",
+      "salida": "17:40",
+      "solicito_lavado": true
+    },
+    {
+      "id": "MOV021",
+      "patente": "AX123YY",
+      "tipo_vehiculo": "AUTO",
+      "entrada": "16:00",
+      "salida": "17:00",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV022",
+      "patente": "AY234ZZ",
+      "tipo_vehiculo": "camioneta",
+      "entrada": "15:00",
+      "salida": "18:00",
+      "solicito_lavado": true
+    },
+    {
+      "id": "MOV023",
+      "patente": "AZ345AA",
+      "tipo_vehiculo": "auto",
+      "entrada": "16:30",
+      "salida": "17:30",
+      "solicito_lavado": true
+    },
+    {
+      "id": "MOV024",
+      "patente": "BA456BB",
+      "tipo_vehiculo": "moto",
+      "entrada": "17:00",
+      "salida": "17:10",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV025",
+      "patente": "BB567CC",
+      "tipo_vehiculo": "auto",
+      "entrada": "14:00",
+      "salida": "18:00",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV026",
+      "patente": "BC678DD",
+      "tipo_vehiculo": "camioneta",
+      "entrada": "17:15",
+      "salida": "17:45",
+      "solicito_lavado": true
+    },
+    {
+      "id": "MOV027",
+      "patente": "BD789EE",
+      "tipo_vehiculo": "auto",
+      "entrada": "17:20",
+      "salida": "17:55",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV028",
+      "patente": "BE890FF",
+      "tipo_vehiculo": "moto",
+      "entrada": "17:30",
+      "salida": "18:00",
+      "solicito_lavado": true
+    },
+    {
+      "id": "MOV029",
+      "patente": " BF 901 GG ",
+      "tipo_vehiculo": "auto",
+      "entrada": "16:00",
+      "salida": "17:45",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV030",
+      "patente": "BG012HH",
+      "tipo_vehiculo": "camioneta",
+      "entrada": "12:00",
+      "salida": "16:30",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV031",
+      "patente": "BH123JJ",
+      "tipo_vehiculo": "auto",
+      "entrada": "18:00",
+      "salida": "15:00",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV032",
+      "patente": "BJ234KK",
+      "tipo_vehiculo": "tractor",
+      "entrada": "10:00",
+      "salida": "12:00",
+      "solicito_lavado": false
+    },
+    {
+      "id": "MOV033",
+      "patente": "PATENTE99",
+      "tipo_vehiculo": "auto",
+      "entrada": "11:00",
+      "salida": "13:00",
+      "solicito_lavado": false
+    }
+  ]
+}
