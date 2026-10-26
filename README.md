@@ -25,10 +25,31 @@ no pudo crear el Excel. Para el libro con estadísticas hace falta instalarlo.
 Menú:
 
 ```text
-1. Registrar / Consultar cobro manual
-2. Procesar lote de movimientos (JSON -> CSV + Excel)
-3. Salir
+==============================================================
+      AUTOPARK - GESTION DE ESTACIONAMIENTO
+==============================================================
+  OPERACIONES
+   1. Cobro manual en ventanilla
+   2. Procesar lote de movimientos (JSON -> CSV + Excel)
+
+  CONSULTAS
+   3. Historial y totales por patente
+   4. Ranking del ultimo lote
+   5. Movimientos rechazados
+   6. Estadisticas del ultimo lote
+
+  CONFIGURACION Y AYUDA
+   7. Ver tarifas vigentes
+   8. Ayuda, formatos y archivos generados
+
+   9. Salir
+==============================================================
 ```
+
+Las opciones **3 a 6** son de solo lectura: leen los CSV generados y no
+modifican los datos. La opción **7** muestra la configuración y los precios
+vigentes; la opción **8** recuerda formatos, campos del JSON y archivos
+generados.
 
 Las pruebas automáticas se corren aparte:
 
@@ -226,6 +247,11 @@ Como el parcial es individual, la modalidad pide al menos un desafío de
 2. **N.º 3 — Ordenamiento algorítmico:** se genera
    `salidas/liquidacion_ranking.csv` con los registros ordenados de mayor a menor
    total (se usa `sorted()` con una función lambda).
+
+La **opción 3 del menú** agrega una consulta extra por patente: muestra cantidad
+de ingresos, total acumulado y estadía promedio, leyendo `liquidacion.csv` y
+`liquidacion-manual.csv`. No se cuenta como desafío formal porque el lote se
+regenera en cada procesamiento.
 
 Además se agregó un **reporte Excel opcional** con hojas ordenadas y un
 recuadro de estadísticas. Es una mejora de presentación: no reemplaza los CSV

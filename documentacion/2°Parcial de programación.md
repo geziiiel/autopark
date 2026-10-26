@@ -20,6 +20,9 @@
 - `documentacion/` → enunciado, desafíos y este resumen.
 - `salidas/` → CSV y Excel generados.
 
+El menú tiene nueve opciones: cobro manual, proceso por lote, historial por
+patente, ranking, rechazados, estadísticas, tarifas, ayuda y salida.
+
 ## Desafíos elegidos (NIVEL 1)
 
 1. **N.º 2 — Reporte estadístico y métricas del negocio.**

@@ -1,3 +1,4 @@
+import csv
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -11,6 +12,8 @@ from datos import (
     a_booleano,
     cargar_json,
     cargar_tarifas,
+    formatear_minutos,
+    formatear_pesos,
     normalizar_hora,
     normalizar_patente,
     normalizar_tipo,
@@ -29,7 +32,7 @@ from reportes import (
     imprimir_metricas,
     imprimir_resumen,
 )
-from tarifas import liquidar, mapa_tarifas
+from tarifas import configuracion, liquidar, mapa_tarifas
 
 DATOS = BASE / "datos"
 SALIDAS = BASE / "salidas"
@@ -38,6 +41,18 @@ RUTA_RECHAZADOS = SALIDAS / "rechazados.csv"
 RUTA_RANKING = SALIDAS / "liquidacion_ranking.csv"
 RUTA_EXCEL = SALIDAS / "liquidacion.xlsx"
 RUTA_MANUAL = SALIDAS / "liquidacion-manual.csv"
+
+CAMPOS_NUMERICOS = (
+    "dias",
+    "minutos",
+    "bloques_30",
+    "horas_adicionales",
+    "estacionamiento_base",
+    "bonificacion",
+    "estacionamiento",
+    "lavado",
+    "total",
+)
 
 
 def buscar_en_datos(nombre):
@@ -223,14 +238,221 @@ def procesar_lote_opcion(tarifas):
             RUTA_EXCEL.name))
 
 
+def leer_csv(ruta):
+    ruta = Path(ruta)
+    try:
+        if not ruta.exists() or ruta.stat().st_size == 0:
+            return []
+        with ruta.open(newline="", encoding="utf-8-sig") as archivo:
+            return list(csv.DictReader(archivo))
+    except (OSError, csv.Error) as error:
+        print("No se pudo leer {}: {}".format(ruta.name, error))
+        return []
+
+
+def convertir_liquidacion(fila):
+    convertida = dict(fila)
+    for campo in CAMPOS_NUMERICOS:
+        convertida[campo] = a_entero(fila.get(campo)) or 0
+    return convertida
+
+
+def cargar_liquidaciones():
+    filas = []
+    for ruta, origen in ((RUTA_LIQUIDACION, "lote"), (RUTA_MANUAL, "manual")):
+        for fila in leer_csv(ruta):
+            convertida = convertir_liquidacion(fila)
+            convertida["origen"] = origen
+            filas.append(convertida)
+    return filas
+
+
+def formatear_tiempo(fila):
+    if fila["dias"] > 0:
+        return "{} dia(s)".format(fila["dias"])
+    return formatear_minutos(fila["minutos"])
+
+
+def historial_patente():
+    print()
+    print("--- HISTORIAL POR PATENTE ---")
+    texto = input("Patente (Enter para volver): ").strip()
+    if texto == "":
+        return
+
+    patente = normalizar_patente(texto)
+    if not patente or not patente_valida(patente):
+        print("Patente invalida. Formatos: ABC123 o AA123BB.")
+        return
+
+    filas = [fila for fila in cargar_liquidaciones()
+             if fila.get("patente") == patente]
+    if not filas:
+        print("No hay movimientos registrados para {}.".format(patente))
+        return
+
+    cantidad = len(filas)
+    total = sum(fila["total"] for fila in filas)
+    minutos = sum(
+        fila["dias"] * 1440 if fila["dias"] > 0 else fila["minutos"]
+        for fila in filas)
+    promedio = minutos / cantidad
+
+    print()
+    print("{:<22}{}".format("Patente:", patente))
+    print("{:<22}{}".format("Ingresos registrados:", cantidad))
+    print("{:<22}{}".format("Total acumulado:", formatear_pesos(total)))
+    print("{:<22}{:.1f} min".format("Estadia promedio:", promedio).replace(".", ","))
+    print()
+    print("Detalle:")
+    for fila in filas:
+        print("  - {} | {} | {} | {} | lavado {} | {}".format(
+            fila["origen"],
+            fila.get("id", "-"),
+            fila.get("tipo_vehiculo", "-"),
+            formatear_tiempo(fila),
+            fila.get("solicito_lavado", "-"),
+            formatear_pesos(fila["total"])))
+        fecha = fila.get("fecha_registro")
+        if fecha:
+            print("    Registrado: {}".format(fecha))
+
+
+def ver_ranking():
+    print()
+    print("--- RANKING DEL ULTIMO LOTE ---")
+    filas = [convertir_liquidacion(fila) for fila in leer_csv(RUTA_RANKING)]
+    if not filas:
+        print("No hay ranking. Procesa un lote con la opcion 2.")
+        return
+
+    print("Movimientos: {}".format(len(filas)))
+    print()
+    for puesto, fila in enumerate(filas[:10], 1):
+        print("{:>2}. {:<10} {:<10} {:<10} {:>12}".format(
+            puesto,
+            fila.get("id", "-"),
+            fila.get("patente", "-"),
+            fila.get("tipo_vehiculo", "-"),
+            formatear_pesos(fila["total"])))
+    if len(filas) > 10:
+        print("... y {} movimientos mas.".format(len(filas) - 10))
+
+
+def ver_rechazados():
+    print()
+    print("--- MOVIMIENTOS RECHAZADOS ---")
+    filas = leer_csv(RUTA_RECHAZADOS)
+    if not filas:
+        print("No hay rechazos guardados. Procesa un lote con la opcion 2.")
+        return
+
+    print("{:<10} {:<10} {:<12} {}".format(
+        "ID", "PATENTE", "TIPO", "MOTIVO"))
+    print("-" * 70)
+    for fila in filas:
+        print("{:<10} {:<10} {:<12} {}".format(
+            fila.get("id", "-"),
+            fila.get("patente", "-"),
+            fila.get("tipo_vehiculo", "-"),
+            fila.get("motivo", "-")))
+    print()
+    print("Total: {}".format(len(filas)))
+
+
+def ver_estadisticas():
+    print()
+    print("--- ESTADISTICAS DEL ULTIMO LOTE ---")
+    validos = [convertir_liquidacion(fila)
+               for fila in leer_csv(RUTA_LIQUIDACION)]
+    if not validos:
+        print("No hay un lote procesado. Usa la opcion 2.")
+        return
+
+    rechazados = leer_csv(RUTA_RECHAZADOS)
+    metricas = calcular_metricas(validos)
+    imprimir_resumen(validos, rechazados)
+    imprimir_metricas(metricas)
+
+
+def ver_tarifas(tarifas):
+    print()
+    print("--- TARIFAS VIGENTES ---")
+    config = configuracion(tarifas)
+    print("Configuracion:")
+    print("  Bloque inicial:      {} min".format(
+        config.get("minutos_bloque_inicial", 30)))
+    print("  Limite primer tramo: {} min".format(
+        config.get("minutos_limite_primer_tramo", 120)))
+    print("  Hora adicional:      {} min".format(
+        config.get("minutos_hora_adicional", 60)))
+    print("  Dia completo:        {} min".format(
+        config.get("minutos_dia_completo", 1440)))
+    print()
+    print("Categorias:")
+    mapa = mapa_tarifas(tarifas)
+    for tipo in sorted(mapa):
+        valores = mapa[tipo]
+        print("  {}:".format(tipo.capitalize()))
+        print("    Bloque de 30 min: {}".format(
+            formatear_pesos(valores.get("precio_bloque_30min", 0))))
+        print("    Hora adicional:   {}".format(
+            formatear_pesos(valores.get("precio_hora_adicional", 0))))
+        print("    Tope diario:      {}".format(
+            formatear_pesos(valores.get("tope_dia", 0))))
+        print("    Lavado:           {}".format(
+            formatear_pesos(valores.get("precio_lavado", 0))))
+    print()
+    print("Bonificacion por lavado: hasta 4 bloques (120 min) de estacionamiento.")
+
+
+def ver_ayuda():
+    print()
+    print("--- AYUDA, FORMATOS Y ARCHIVOS ---")
+    print("Patentes: ABC123 (tradicional) o AA123BB (Mercosur).")
+    print("Horas: HH:MM entre 00:00 y 23:59.")
+    print("Dias: 0 = mismo dia; mayor a 0 = se cobra por dia completo.")
+    print()
+    print("Lote JSON: datos/movimientos.json")
+    print("Obligatorios: id, patente, tipo_vehiculo.")
+    print("Si dias es 0 o falta, entrada y salida son obligatorias.")
+    print("solicito_lavado es opcional; si falta, vale false.")
+    print("El id debe ser unico dentro del lote.")
+    print()
+    print("Archivos generados:")
+    for ruta in (RUTA_LIQUIDACION, RUTA_RECHAZADOS, RUTA_RANKING,
+                 RUTA_EXCEL, RUTA_MANUAL):
+        try:
+            if ruta.exists():
+                print("  - {} ({:.1f} KB)".format(
+                    ruta.name, ruta.stat().st_size / 1024))
+            else:
+                print("  - {} (no generado)".format(ruta.name))
+        except OSError as error:
+            print("  - {} (no se pudo leer: {})".format(ruta.name, error))
+
+
 def mostrar_menu():
     print()
-    print("=" * 50)
-    print("   SISTEMA DE GESTION DE ESTACIONAMIENTO AUTOPARK")
-    print("=" * 50)
-    print("1. Registrar / Consultar cobro manual")
-    print("2. Procesar lote de movimientos (JSON -> CSV + Excel)")
-    print("3. Salir")
+    print("=" * 62)
+    print("      AUTOPARK - GESTION DE ESTACIONAMIENTO")
+    print("=" * 62)
+    print("  OPERACIONES")
+    print("   1. Cobro manual en ventanilla")
+    print("   2. Procesar lote de movimientos (JSON -> CSV + Excel)")
+    print()
+    print("  CONSULTAS")
+    print("   3. Historial y totales por patente")
+    print("   4. Ranking del ultimo lote")
+    print("   5. Movimientos rechazados")
+    print("   6. Estadisticas del ultimo lote")
+    print()
+    print("  CONFIGURACION Y AYUDA")
+    print("   7. Ver tarifas vigentes")
+    print("   8. Ayuda, formatos y archivos generados")
+    print()
+    print("   9. Salir")
+    print("=" * 62)
 
 
 def main():
@@ -261,10 +483,22 @@ def main():
         elif opcion == "2":
             procesar_lote_opcion(tarifas)
         elif opcion == "3":
+            historial_patente()
+        elif opcion == "4":
+            ver_ranking()
+        elif opcion == "5":
+            ver_rechazados()
+        elif opcion == "6":
+            ver_estadisticas()
+        elif opcion == "7":
+            ver_tarifas(tarifas)
+        elif opcion == "8":
+            ver_ayuda()
+        elif opcion == "9":
             print("Hasta luego.")
             break
         else:
-            print("Opcion invalida. Ingresa 1, 2 o 3.")
+            print("Opcion invalida. Ingresa un numero del 1 al 9.")
 
 
 if __name__ == "__main__":

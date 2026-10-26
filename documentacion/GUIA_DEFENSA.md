@@ -58,10 +58,11 @@ Cuando escribís `python main.py` pasa esto:
 4. `main()` crea la carpeta `salidas/` si no existe.
 5. `buscar_tarifas()` encuentra `datos/tarifas.json`.
 6. `cargar_tarifas()` valida los precios.
-7. Aparece el menú.
+7. Aparece el menú con nueve opciones agrupadas.
 8. Si elegís **1** → `cobro_manual()`.
 9. Si elegís **2** → `procesar_lote_opcion()`.
-10. Si elegís **3** → termina.
+10. Si elegís **3 a 8** → consultas, tarifas y ayuda (`historial_patente()`, `ver_ranking()`, `ver_rechazados()`, `ver_estadisticas()`, `ver_tarifas()`, `ver_ayuda()`).
+11. Si elegís **9** → termina.
 
 ### Opción 2, paso a paso
 
@@ -103,33 +104,44 @@ cobro_manual()
 
 | Líneas | Qué explicar |
 |---|---|
-| 1-7 | Imports. `BASE` es la carpeta del proyecto. `sys.path.insert` agrega `codigo/` para que funcionen los imports. |
-| 9-32 | Se importan solo las funciones que usa `main.py`. Cada módulo tiene una responsabilidad. |
-| 34-40 | Rutas de datos y salidas. `DATOS` apunta a `datos/`; `SALIDAS` a `salidas/`. |
-| 43-48 | `buscar_en_datos()` busca primero en `datos/` y, por compatibilidad, en la raíz. |
-| 51-56 | `buscar_tarifas()` acepta `tarifas.json` o `tarifa.json`. |
-| 59-67 | `pedir_patente()`: pide hasta que sea válida; Enter cancela. |
-| 70-77 | `pedir_tipo()`: muestra las categorías disponibles y valida contra las tarifas. |
-| 80-86 | `pedir_dias()`: entero mayor o igual a 0. |
-| 89-95 | `pedir_hora()`: normaliza a `HH:MM` o vuelve a pedir. |
-| 98-104 | `pedir_lavado()`: usa `a_booleano()` y acepta S/N. |
-| 107-114 | Empieza el cobro manual; si la patente es `None`, cancela. |
-| 116-121 | Pide tipo y días; inicializa horas y minutos. |
-| 123-134 | Si `dias == 0`, pide entrada y salida, calcula minutos y rechaza salida anterior o duración cero. |
-| 135-136 | Si `dias > 0`, no pide horas: se cobra por día completo. |
-| 138-141 | Pide lavado, llama a `liquidar()` y muestra el desglose. |
-| 143-163 | Arma el registro con un ID único `MAN-...` usando fecha, hora y milisegundos. |
-| 165-174 | Guarda en `liquidacion-manual.csv`; si el archivo está abierto, captura `OSError` y avisa. |
-| 176-187 | Opción 2: busca y lee el JSON, llama a `procesar_lote()` y obtiene la fecha de operación. |
-| 189-196 | Escribe los tres CSV; si alguno está bloqueado, avisa y no rompe el programa. |
-| 198-200 | Calcula métricas y muestra el resumen por consola. |
-| 202-214 | Intenta generar el Excel. Si falta `openpyxl` o el archivo está abierto, avisa y sigue. |
-| 216-223 | Lista los archivos generados. |
-| 226-233 | `mostrar_menu()`: imprime las tres opciones. |
-| 236-246 | `main()`: configura la salida UTF-8 y crea `salidas/`. |
-| 248-253 | Carga las tarifas; si hay error, muestra el mensaje y termina. |
-| 255-267 | Bucle del menú: 1 manual, 2 lote, 3 salir, cualquier otra cosa es inválida. |
-| 270-274 | Punto de entrada; captura `Ctrl+C` y `EOFError` para salir prolijamente. |
+| 1-8 | Imports. `BASE` es la carpeta del proyecto. `sys.path.insert` agrega `codigo/` para que funcionen los imports. |
+| 10-35 | Se importan solo las funciones que usa `main.py`. Cada módulo tiene una responsabilidad. |
+| 37-43 | Rutas de datos y salidas. `DATOS` apunta a `datos/`; `SALIDAS` a `salidas/`. |
+| 45-55 | `CAMPOS_NUMERICOS`: campos que se convierten a entero al leer los CSV. |
+| 58-63 | `buscar_en_datos()` busca primero en `datos/` y, por compatibilidad, en la raíz. |
+| 66-71 | `buscar_tarifas()` acepta `tarifas.json` o `tarifa.json`. |
+| 74-82 | `pedir_patente()`: pide hasta que sea válida; Enter cancela. |
+| 85-92 | `pedir_tipo()`: muestra las categorías disponibles y valida contra las tarifas. |
+| 95-101 | `pedir_dias()`: entero mayor o igual a 0. |
+| 104-110 | `pedir_hora()`: normaliza a `HH:MM` o vuelve a pedir. |
+| 113-119 | `pedir_lavado()`: usa `a_booleano()` y acepta S/N. |
+| 122-129 | Empieza el cobro manual; si la patente es `None`, cancela. |
+| 131-136 | Pide tipo y días; inicializa horas y minutos. |
+| 138-149 | Si `dias == 0`, pide entrada y salida, calcula minutos y rechaza salida anterior o duración cero. |
+| 150-151 | Si `dias > 0`, no pide horas: se cobra por día completo. |
+| 153-156 | Pide lavado, llama a `liquidar()` y muestra el desglose. |
+| 158-178 | Arma el registro con un ID único `MAN-...` usando fecha, hora y milisegundos. |
+| 180-189 | Guarda en `liquidacion-manual.csv`; si el archivo está abierto, captura `OSError` y avisa. |
+| 191-202 | Opción 2: busca y lee el JSON, llama a `procesar_lote()` y obtiene la fecha de operación. |
+| 204-211 | Escribe los tres CSV; si alguno está bloqueado, avisa y no rompe el programa. |
+| 213-215 | Calcula métricas y muestra el resumen por consola. |
+| 217-229 | Intenta generar el Excel. Si falta `openpyxl` o el archivo está abierto, avisa y sigue. |
+| 231-238 | Lista los archivos generados. |
+| 241-250 | `leer_csv()`: lee un CSV con `utf-8-sig` y devuelve una lista de diccionarios; si no existe, devuelve `[]`. |
+| 253-257 | `convertir_liquidacion()`: convierte a entero los campos numéricos de una fila. |
+| 260-267 | `cargar_liquidaciones()`: une `liquidacion.csv` (lote) y `liquidacion-manual.csv` (manual). |
+| 270-273 | `formatear_tiempo()`: muestra días completos o minutos según corresponda. |
+| 276-318 | `historial_patente()`: pide una patente, suma ingresos, total y promedio, y muestra el detalle. |
+| 321-339 | `ver_ranking()`: lee el ranking y muestra el top 10. |
+| 342-360 | `ver_rechazados()`: lee y muestra los rechazados con su motivo. |
+| 363-375 | `ver_estadisticas()`: recalcula el resumen y las métricas del último lote desde los CSV. |
+| 378-406 | `ver_tarifas()`: muestra configuración, precios por categoría y la bonificación por lavado. |
+| 409-432 | `ver_ayuda()`: explica formatos, campos del JSON y archivos generados. |
+| 435-455 | `mostrar_menu()`: imprime las nueve opciones agrupadas por Operaciones, Consultas y Configuración. |
+| 458-468 | `main()`: configura la salida UTF-8 y crea `salidas/`. |
+| 470-475 | Carga las tarifas; si hay error, muestra el mensaje y termina. |
+| 477-501 | Bucle del menú: 1 manual, 2 lote, 3 historial, 4 ranking, 5 rechazados, 6 estadísticas, 7 tarifas, 8 ayuda, 9 salir. |
+| 504-508 | Punto de entrada; captura `Ctrl+C` y `EOFError` para salir prolijamente. |
 
 **Frase para defender `sys.path.insert`:**
 
@@ -441,8 +453,8 @@ válido se registra; si aparece de nuevo, se rechaza.
 ## 6. Guion corto para la presentación (2 minutos)
 
 > “Buen día. Mi programa se llama AutoPark y resuelve la liquidación de un
-> estacionamiento. La entrada es `main.py`, que muestra un menú con cobro manual
-> y procesamiento por lote.
+> estacionamiento. La entrada es `main.py`, que muestra un menú con nueve
+> opciones: cobro manual, proceso por lote, consultas, tarifas y ayuda.
 >
 > Los datos se leen desde `datos/`. `datos.py` se encarga de normalizar patentes,
 > tipos y horas, y de validar las tarifas. `validaciones.py` decide si un
@@ -495,7 +507,9 @@ válido se registra; si aparece de nuevo, se rechaza.
    - salida `08:30`;
    - lavado `N`.
    Debe dar **$700** y guardar en `salidas/liquidacion-manual.csv`.
-8. Cerrá con la opción **3**.
+8. Volvé al menú, elegí **3** y buscá `ABC123`: debe mostrar el ingreso manual,
+   el total acumulado y la estadía promedio.
+9. Cerrá con la opción **9**.
 
 **Antes de la demo:** cerrá el Excel si está abierto, para que el programa pueda
 sobrescribir el archivo.
