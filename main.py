@@ -22,6 +22,7 @@ from procesamiento import procesar_lote
 from reportes import (
     agregar_liquidacion_manual,
     calcular_metricas,
+    escribir_excel,
     escribir_liquidacion,
     escribir_ranking,
     escribir_rechazados,
@@ -36,6 +37,7 @@ RUTA_MOVIMIENTOS = BASE / "movimientos.json"
 RUTA_LIQUIDACION = BASE / "liquidacion.csv"
 RUTA_RECHAZADOS = BASE / "rechazados.csv"
 RUTA_RANKING = BASE / "liquidacion_ranking.csv"
+RUTA_EXCEL = BASE / "liquidacion.xlsx"
 RUTA_MANUAL = BASE / "liquidacion-manual.csv"
 
 
@@ -175,6 +177,8 @@ def procesar_lote_opcion(tarifas):
         print("Error: {}".format(error))
         return
 
+    fecha_operacion = datos.get("fecha_operacion") if isinstance(datos, dict) else None
+
     try:
         escribir_liquidacion(validos, RUTA_LIQUIDACION)
         escribir_rechazados(rechazados, RUTA_RECHAZADOS)
@@ -184,14 +188,32 @@ def procesar_lote_opcion(tarifas):
         print("Cerrá los archivos si están abiertos en Excel y volvé a intentar.")
         return
 
+    metricas = calcular_metricas(validos)
     imprimir_resumen(validos, rechazados)
-    imprimir_metricas(calcular_metricas(validos))
+    imprimir_metricas(metricas)
+
+    excel_generado = True
+    try:
+        escribir_excel(validos, rechazados, metricas, RUTA_EXCEL,
+                       fecha_operacion)
+    except ImportError as error:
+        excel_generado = False
+        print()
+        print("Aviso: no se genero {}: {}".format(RUTA_EXCEL.name, error))
+    except OSError as error:
+        excel_generado = False
+        print()
+        print("No se pudo escribir {}: {}".format(RUTA_EXCEL.name, error))
+        print("Cerrá el archivo si está abierto en Excel y volvé a intentar.")
 
     print()
     print("Archivos generados:")
     print("  - {}".format(RUTA_LIQUIDACION.name))
     print("  - {}".format(RUTA_RECHAZADOS.name))
     print("  - {} (desafio nivel 1 N.º 3)".format(RUTA_RANKING.name))
+    if excel_generado:
+        print("  - {} (hojas ordenadas + recuadro de estadisticas)".format(
+            RUTA_EXCEL.name))
 
 
 def mostrar_menu():
@@ -200,7 +222,7 @@ def mostrar_menu():
     print("   SISTEMA DE GESTION DE ESTACIONAMIENTO AUTOPARK")
     print("=" * 50)
     print("1. Registrar / Consultar cobro manual")
-    print("2. Procesar lote de movimientos (JSON -> CSV)")
+    print("2. Procesar lote de movimientos (JSON -> CSV + Excel)")
     print("3. Salir")
 
 

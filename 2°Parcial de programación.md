@@ -24,10 +24,20 @@
 - Categoría más rentable: **camioneta** ($64.900).
 - Lavados: **13 de 30 (43,3 %)**.
 
+## Salidas
+
+- `liquidacion.csv` → movimientos válidos, ordenados por patente.
+- `rechazados.csv` → rechazos, ordenados por ID.
+- `liquidacion_ranking.csv` → ranking de mayor a menor total.
+- `liquidacion.xlsx` → hojas ordenadas y recuadro de estadísticas (opcional,
+  requiere `openpyxl`).
+
 ## Ejecución
 
 ```cmd
 cd "C:\Users\Geziel\Documents\2 Parcial"
+:: solo hace falta para el Excel
+python -m pip install -r requirements.txt
 python main.py
 ```
 

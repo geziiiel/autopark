@@ -1,14 +1,21 @@
 """Pruebas del sistema AutoPark.
 
 Se corren con:  python pruebas.py
-No hace falta instalar nada: son assert comunes.
+No hace falta instalar nada: son assert comunes. El bloque de Excel se omite
+si openpyxl no esta instalado.
 """
 
+import tempfile
 from pathlib import Path
 
 from datos import cargar_json, cargar_tarifas, normalizar_patente, patente_valida
 from procesamiento import procesar_lote
-from reportes import calcular_metricas
+from reportes import (
+    calcular_metricas,
+    escribir_excel,
+    ordenar_liquidacion,
+    ordenar_rechazados,
+)
 from tarifas import calcular_estacionamiento_recursivo, liquidar
 from validaciones import validar_movimiento
 
@@ -151,6 +158,72 @@ def probar_lote(tarifas):
     assert round(metricas["promedios"]["auto"], 1) == 113.0
     assert round(metricas["promedios"]["moto"], 1) == 66.9
     assert round(metricas["promedios"]["camioneta"], 1) == 138.3
+
+    assert [fila["patente"] for fila in ordenar_liquidacion(validos)] == sorted(
+        fila["patente"] for fila in validos)
+    assert [fila["id"] for fila in ordenar_rechazados(rechazados)] == sorted(
+        fila["id"] for fila in rechazados)
+
+    desordenados = [
+        {"patente": "ZZ999ZZ", "id": "3"},
+        {"patente": "AA111AA", "id": "1"},
+        {"patente": "MM555MM", "id": "2"},
+    ]
+    assert [fila["patente"] for fila in ordenar_liquidacion(desordenados)] == [
+        "AA111AA", "MM555MM", "ZZ999ZZ"]
+
+    rechazos_desordenados = [
+        {"id": "MOV003", "patente": "CCC333"},
+        {"id": "MOV001", "patente": "AAA111"},
+        {"id": "MOV002", "patente": "BBB222"},
+    ]
+    assert [fila["id"] for fila in ordenar_rechazados(rechazos_desordenados)] == [
+        "MOV001", "MOV002", "MOV003"]
+
+    probar_excel(validos, rechazados, metricas)
+
+
+def probar_excel(validos, rechazados, metricas):
+    """Prueba el libro Excel si openpyxl esta instalado; si no, se omite."""
+    try:
+        import openpyxl
+    except ImportError:
+        return
+
+    with tempfile.TemporaryDirectory() as carpeta:
+        ruta = Path(carpeta) / "liquidacion.xlsx"
+        escribir_excel(validos, rechazados, metricas, ruta)
+
+        libro = openpyxl.load_workbook(ruta)
+        try:
+            assert libro.sheetnames == [
+                "Estadísticas", "Liquidación", "Ranking", "Rechazados"]
+
+            hoja_liquidacion = libro["Liquidación"]
+            patentes = [
+                hoja_liquidacion.cell(fila, 2).value
+                for fila in range(3, 3 + len(validos))
+            ]
+            assert patentes == sorted(patentes)
+
+            hoja_ranking = libro["Ranking"]
+            totales = [
+                hoja_ranking.cell(fila, 16).value
+                for fila in range(3, 3 + len(validos))
+            ]
+            assert totales == sorted(totales, reverse=True)
+
+            hoja_stats = libro["Estadísticas"]
+            valores = {
+                hoja_stats.cell(fila, 1).value: hoja_stats.cell(fila, 2).value
+                for fila in range(1, hoja_stats.max_row + 1)
+            }
+            assert valores["Total recaudado"] == 129000
+            assert valores["Movimientos procesados"] == 30
+            assert valores["Movimientos rechazados"] == 3
+            assert len(hoja_stats._charts) == 1
+        finally:
+            libro.close()
 
 
 def main():

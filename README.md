@@ -3,9 +3,10 @@
 2.º Examen Parcial de Programación I / II — Instituto Roque González  
 Alumno: **Geziel** — Modalidad: **individual**
 
-Aplicación de consola en Python, sin dependencias externas (solo biblioteca
-estándar). Lee `tarifas.json` y `movimientos.json`, valida los datos, liquida
-las estadías y genera los CSV.
+Aplicación de consola en Python. El núcleo usa solo la biblioteca estándar;
+para el Excel opcional se usa `openpyxl`. Lee `tarifas.json` y
+`movimientos.json`, valida los datos, liquida las estadías y genera los CSV
+(y, si está instalado `openpyxl`, un libro Excel con estadísticas).
 
 ---
 
@@ -13,14 +14,19 @@ las estadías y genera los CSV.
 
 ```cmd
 cd "C:\Users\Geziel\Documents\2 Parcial"
+:: opcional, solo para el Excel
+python -m pip install -r requirements.txt
 python main.py
 ```
+
+El programa funciona igual sin instalar `openpyxl`: genera los CSV y avisa que
+no pudo crear el Excel. Para el libro con estadísticas hace falta instalarlo.
 
 Menú:
 
 ```text
 1. Registrar / Consultar cobro manual
-2. Procesar lote de movimientos (JSON -> CSV)
+2. Procesar lote de movimientos (JSON -> CSV + Excel)
 3. Salir
 ```
 
@@ -43,18 +49,55 @@ Resultado esperado: `Todas las pruebas pasaron: 6 grupos OK.`
 | `tarifas.py` | Cálculo recursivo del estacionamiento y liquidación final |
 | `validaciones.py` | Motivo de rechazo de cada movimiento del lote |
 | `procesamiento.py` | Recorre el lote, valida y liquida |
-| `reportes.py` | CSV de salida, ranking, métricas y resumen por consola |
-| `pruebas.py` | Pruebas con `assert` de reglas y casos límite |
+| `reportes.py` | CSV, Excel opcional, ranking, métricas y resumen por consola |
+| `pruebas.py` | Pruebas con `assert`; el Excel se prueba si `openpyxl` está instalado |
+| `requirements.txt` | Dependencia opcional para el Excel (`openpyxl`) |
 | `tarifas.json` | Configuración y precios (se puede modificar) |
 | `movimientos.json` | Movimientos del día (se puede modificar) |
 
 Archivos que genera el programa:
 
-- `liquidacion.csv` → movimientos válidos del lote. La columna `total` es el
-  total cobrado.
-- `rechazados.csv` → movimientos descartados con su motivo.
+- `liquidacion.csv` → movimientos válidos del lote, **ordenados por patente**.
+  La columna `total` es el total cobrado.
+- `rechazados.csv` → movimientos descartados con su motivo, **ordenados por ID**.
 - `liquidacion_ranking.csv` → desafío nivel 1 N.º 3 (ordenado por total).
-- `liquidacion-manual.csv` → cobros manuales acumulados.
+- `liquidacion.xlsx` → libro Excel con hojas ordenadas y un recuadro de
+  estadísticas (opcional; requiere `openpyxl`).
+- `liquidacion-manual.csv` → cobros manuales acumulados, en orden cronológico.
+
+### Excel de salida (`liquidacion.xlsx`)
+
+Si `openpyxl` está instalado, al procesar el lote también se genera un libro
+con cuatro hojas:
+
+| Hoja | Contenido | Orden |
+|---|---|---|
+| `Estadísticas` | Recuadro con el resumen del negocio | — |
+| `Liquidación` | Movimientos válidos | Patente y luego ID |
+| `Ranking` | Mismos movimientos, con puesto | Total de mayor a menor |
+| `Rechazados` | Movimientos descartados | ID |
+
+El recuadro de `Estadísticas` incluye: total recaudado, procesados, rechazados,
+total de movimientos, lavados, porcentaje de lavados, ticket promedio,
+categoría más rentable, recaudación por categoría, estadía promedio, rechazos
+por motivo y top 5 del ranking. También se agrega un gráfico de barras con la
+recaudación por categoría.
+
+Si `openpyxl` no está instalado, el programa genera los CSV y muestra un aviso;
+no se rompe. Para instalarlo:
+
+```cmd
+python -m pip install -r requirements.txt
+```
+
+En `reportes.py`, `escribir_excel` arma el libro; `escribir_tabla` es genérica
+para las tres hojas de datos y `seccion`, `dato` y `tabla` escriben el recuadro
+de `Estadísticas`. Toda esta parte es independiente del cálculo: si falla, los
+CSV ya están generados.
+
+El libro incluye la fecha de operación que trae `movimientos.json`. Si se vuelve
+a ejecutar el lote, el archivo se regenera y Git puede marcarlo como modificado;
+no afecta a los CSV.
 
 ---
 
@@ -118,6 +161,8 @@ Métricas (desafío nivel 1 N.º 2):
 
 - Categoría más rentable: **camioneta** ($64.900).
 - Vehículos con lavado: **13 de 30 (43,3 %)**.
+- Excel generado: `liquidacion.xlsx` con 4 hojas, datos ordenados y recuadro de
+  estadísticas.
 
 ---
 
@@ -132,6 +177,11 @@ Como el parcial es individual, la modalidad pide al menos un desafío de
 2. **N.º 3 — Ordenamiento algorítmico:** se genera
    `liquidacion_ranking.csv` con los registros ordenados de mayor a menor total
    (se usa `sorted()` con una función lambda).
+
+Además se agregó un **reporte Excel opcional** con hojas ordenadas y un
+recuadro de estadísticas. Es una mejora de presentación: no reemplaza los CSV
+que pide el enunciado y el programa sigue funcionando si `openpyxl` no está
+instalado.
 
 ---
 
@@ -185,6 +235,12 @@ entrada se descarta". Se priorizaron dos desafíos que no alteran esa regla. Por
 eso `MOV031` se rechaza. Si se quisiera agregar, se resolvería sumando
 `24 * 60` minutos a la salida cuando es menor que la entrada.
 
+### 8. El Excel es opcional y no reemplaza a los CSV
+El enunciado pide CSV. `liquidacion.xlsx` es un extra de presentación para que
+el lote se pueda revisar ordenado y con estadísticas. Si `openpyxl` no está
+instalado, el programa genera igual los tres CSV y muestra un aviso; no hay
+dependencia obligatoria.
+
 ---
 
 ## Repositorio
@@ -198,7 +254,8 @@ git log --oneline
 ```
 
 `liquidacion-manual.csv` está en `.gitignore` porque se va acumulando con cada
-prueba manual. Los CSV del lote sí quedan versionados como ejemplo.
+prueba manual. Los CSV del lote y `liquidacion.xlsx` sí quedan versionados como
+ejemplo.
 
 Para subirlo a GitHub, crear primero un repositorio vacío en la web y después:
 
