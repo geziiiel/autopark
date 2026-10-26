@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "AutoPark (main.py)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/main.py",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Pruebas (pruebas.py)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/pruebas.py",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ]
+}
