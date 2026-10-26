@@ -63,6 +63,7 @@ Cuando escribís `python main.py` pasa esto:
 9. Si elegís **2** → `procesar_lote_opcion()`.
 10. Si elegís **3 a 8** → consultas, tarifas y ayuda (`historial_patente()`, `ver_ranking()`, `ver_rechazados()`, `ver_estadisticas()`, `ver_tarifas()`, `ver_ayuda()`).
 11. Si elegís **9** → termina.
+12. Después de cada acción, `pausar_y_limpiar()` espera Enter y limpia la pantalla para volver al menú.
 
 ### Opción 2, paso a paso
 
@@ -137,11 +138,12 @@ cobro_manual()
 | 363-375 | `ver_estadisticas()`: recalcula el resumen y las métricas del último lote desde los CSV. |
 | 378-406 | `ver_tarifas()`: muestra configuración, precios por categoría y la bonificación por lavado. |
 | 409-432 | `ver_ayuda()`: explica formatos, campos del JSON y archivos generados. |
-| 435-455 | `mostrar_menu()`: imprime las nueve opciones agrupadas por Operaciones, Consultas y Configuración. |
-| 458-468 | `main()`: configura la salida UTF-8 y crea `salidas/`. |
-| 470-475 | Carga las tarifas; si hay error, muestra el mensaje y termina. |
-| 477-501 | Bucle del menú: 1 manual, 2 lote, 3 historial, 4 ranking, 5 rechazados, 6 estadísticas, 7 tarifas, 8 ayuda, 9 salir. |
-| 504-508 | Punto de entrada; captura `Ctrl+C` y `EOFError` para salir prolijamente. |
+| 435-441 | `pausar_y_limpiar()`: espera Enter y limpia la consola antes de volver al menú. |
+| 444-464 | `mostrar_menu()`: imprime las nueve opciones agrupadas por Operaciones, Consultas y Configuración. |
+| 467-477 | `main()`: configura la salida UTF-8 y crea `salidas/`. |
+| 479-484 | Carga las tarifas; si hay error, muestra el mensaje y termina. |
+| 486-511 | Bucle del menú: 1 manual, 2 lote, 3 historial, 4 ranking, 5 rechazados, 6 estadísticas, 7 tarifas, 8 ayuda, 9 salir; después de cada acción pausa y limpia. |
+| 514-518 | Punto de entrada; captura `Ctrl+C` y `EOFError` para salir prolijamente. |
 
 **Frase para defender `sys.path.insert`:**
 

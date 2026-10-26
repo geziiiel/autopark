@@ -432,6 +432,15 @@ def ver_ayuda():
             print("  - {} (no se pudo leer: {})".format(ruta.name, error))
 
 
+def pausar_y_limpiar():
+    try:
+        input("\nPresione Enter para volver al menu...")
+    except EOFError:
+        pass
+    import os
+    os.system("cls" if os.name == "nt" else "clear")
+
+
 def mostrar_menu():
     print()
     print("=" * 62)
@@ -499,6 +508,7 @@ def main():
             break
         else:
             print("Opcion invalida. Ingresa un numero del 1 al 9.")
+        pausar_y_limpiar()
 
 
 if __name__ == "__main__":

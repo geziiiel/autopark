@@ -51,6 +51,9 @@ modifican los datos. La opción **7** muestra la configuración y los precios
 vigentes; la opción **8** recuerda formatos, campos del JSON y archivos
 generados.
 
+Después de cada acción el programa espera Enter y limpia la pantalla antes de
+volver a mostrar el menú.
+
 Las pruebas automáticas se corren aparte:
 
 ```cmd
