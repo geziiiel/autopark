@@ -50,7 +50,8 @@ Resultado esperado: `Todas las pruebas pasaron: 6 grupos OK.`
 
 Archivos que genera el programa:
 
-- `liquidacion.csv` → movimientos válidos del lote.
+- `liquidacion.csv` → movimientos válidos del lote. La columna `total` es el
+  total cobrado.
 - `rechazados.csv` → movimientos descartados con su motivo.
 - `liquidacion_ranking.csv` → desafío nivel 1 N.º 3 (ordenado por total).
 - `liquidacion-manual.csv` → cobros manuales acumulados.
@@ -188,7 +189,7 @@ eso `MOV031` se rechaza. Si se quisiera agregar, se resolvería sumando
 
 ## Repositorio
 
-El proyecto ya está inicializado en Git, en la rama `main`, con dos commits:
+El proyecto ya está inicializado en Git, en la rama `main`, con varios commits:
 
 ```cmd
 cd "C:\Users\Geziel\Documents\2 Parcial"
