@@ -154,10 +154,16 @@ def cobro_manual(tarifas):
         "tope_aplicado": "S" if liquidacion["tope_aplicado"] else "N",
     }
 
-    agregar_liquidacion_manual(registro, RUTA_MANUAL)
+    try:
+        agregar_liquidacion_manual(registro, RUTA_MANUAL)
+    except OSError as error:
+        print()
+        print("No se pudo guardar el registro: {}".format(error))
+        print("Cerrá liquidacion-manual.csv si está abierto en Excel.")
+        return
+
     print()
     print("Registro guardado en {}.".format(RUTA_MANUAL.name))
-
 
 def procesar_lote_opcion(tarifas):
     print()
@@ -169,9 +175,14 @@ def procesar_lote_opcion(tarifas):
         print("Error: {}".format(error))
         return
 
-    escribir_liquidacion(validos, RUTA_LIQUIDACION)
-    escribir_rechazados(rechazados, RUTA_RECHAZADOS)
-    escribir_ranking(validos, RUTA_RANKING)
+    try:
+        escribir_liquidacion(validos, RUTA_LIQUIDACION)
+        escribir_rechazados(rechazados, RUTA_RECHAZADOS)
+        escribir_ranking(validos, RUTA_RANKING)
+    except OSError as error:
+        print("No se pudieron escribir los CSV: {}".format(error))
+        print("Cerrá los archivos si están abiertos en Excel y volvé a intentar.")
+        return
 
     imprimir_resumen(validos, rechazados)
     imprimir_metricas(calcular_metricas(validos))

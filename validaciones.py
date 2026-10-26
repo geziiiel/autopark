@@ -17,7 +17,11 @@ from tarifas import mapa_tarifas
 
 
 def _texto(valor):
-    return "" if valor is None else str(valor)
+    """Texto corto para el motivo. Si vino vacio, se muestra 'vacio'."""
+    if valor is None:
+        return "vacio"
+    texto = str(valor).strip()
+    return texto if texto else "vacio"
 
 
 def validar_movimiento(movimiento, tarifas, ids_vistos):
@@ -25,7 +29,8 @@ def validar_movimiento(movimiento, tarifas, ids_vistos):
     if not isinstance(movimiento, dict):
         return None, "Movimiento invalido (no es un objeto)"
 
-    id_movimiento = _texto(movimiento.get("id")).strip()
+    id_crudo = movimiento.get("id")
+    id_movimiento = "" if id_crudo is None else str(id_crudo).strip()
     if not id_movimiento:
         return None, "ID vacio"
     if id_movimiento in ids_vistos:

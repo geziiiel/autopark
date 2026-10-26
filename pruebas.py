@@ -101,6 +101,9 @@ def probar_validaciones(tarifas):
     assert motivo({"entrada": "25:00"}) is not None
     assert motivo({"salida": "ocho"}) is not None
     assert motivo({"id": ""}) == "ID vacio"
+    assert motivo({"id": None}) == "ID vacio"
+    assert motivo({"id": "   "}) == "ID vacio"
+    assert motivo({"patente": None}) == "Patente invalida (vacio)"
     assert motivo({"solicito_lavado": "tal vez"}) is not None
     assert motivo({"dias": -1}) is not None
 

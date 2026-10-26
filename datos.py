@@ -109,6 +109,8 @@ def cargar_json(ruta):
             return json.load(archivo)
     except FileNotFoundError:
         raise ValueError("No se encontro el archivo {}".format(ruta.name))
+    except OSError as error:
+        raise ValueError("No se pudo leer {}: {}".format(ruta.name, error))
     except json.JSONDecodeError as error:
         raise ValueError("El archivo {} no es un JSON valido (linea {}): {}".format(
             ruta.name, error.lineno, error.msg))
