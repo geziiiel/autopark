@@ -178,21 +178,30 @@ exigen horas.
 Para el promedio en minutos, una estadía de `dias > 0` se cuenta como
 `dias * 1440` minutos. Así se puede comparar con las del mismo día.
 
+### 7. No se implementó el cruce de medianoche
+El desafío N.º 4 es opcional y cambiaría la regla base de "salida anterior a la
+entrada se descarta". Se priorizaron dos desafíos que no alteran esa regla. Por
+eso `MOV031` se rechaza. Si se quisiera agregar, se resolvería sumando
+`24 * 60` minutos a la salida cuando es menor que la entrada.
+
 ---
 
 ## Repositorio
 
+El proyecto ya está inicializado en Git, en la rama `main`, con dos commits:
+
 ```cmd
 cd "C:\Users\Geziel\Documents\2 Parcial"
-git init
-git add .
-git commit -m "2do parcial AutoPark"
 git status
+git log --oneline
 ```
 
-Si después se sube a GitHub, cambiar la identidad si hace falta:
+`liquidacion-manual.csv` está en `.gitignore` porque se va acumulando con cada
+prueba manual. Los CSV del lote sí quedan versionados como ejemplo.
+
+Para subirlo a GitHub, crear primero un repositorio vacío en la web y después:
 
 ```cmd
-git config --global user.name "Tu Nombre"
-git config --global user.email "tu@email.com"
+git remote add origin https://github.com/TU-USUARIO/autopark.git
+git push -u origin main
 ```
